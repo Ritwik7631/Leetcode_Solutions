@@ -6,8 +6,16 @@ public:
         int count = 0;
         for(auto a : s)
         {
-            if(!stk.empty() && a == 'a' && stk.top() == 'b')
+            if(stk.empty())
             {
+                stk.push(a);
+                continue;
+            } 
+
+            if(a == 'a' && stk.top() == 'b')
+            {
+                stk.push(a);
+                stk.pop();
                 stk.pop();
                 count++;
             }
@@ -18,25 +26,35 @@ public:
         }
 
         string temp = "";
+
         while(!stk.empty())
         {
-            temp += stk.top();
+            char ch = stk.top();
+            temp += ch;
             stk.pop();
         }
+
         reverse(temp.begin(), temp.end());
         s = temp;
 
         return count;
     }
-
     int ab(string &s)
     {
         stack<char> stk;
         int count = 0;
         for(auto a : s)
         {
-            if(!stk.empty() && a == 'b' && stk.top() == 'a')
+            if(stk.empty())
             {
+                stk.push(a);
+                continue;
+            } 
+
+            if(a == 'b' && stk.top() == 'a')
+            {
+                stk.push(a);
+                stk.pop();
                 stk.pop();
                 count++;
             }
@@ -47,26 +65,27 @@ public:
         }
 
         string temp = "";
+
         while(!stk.empty())
         {
-            temp += stk.top();
+            char ch = stk.top();
+            temp += ch;
             stk.pop();
         }
+
         reverse(temp.begin(), temp.end());
         s = temp;
-
         return count;
     }
-
     int maximumGain(string s, int x, int y) {
-        // We need to prioritize the higher score removal first
-        if (x > y)
-        {
-            return x * ab(s) + y * ba(s);
-        }
-        else
-        {
-            return y * ba(s) + x * ab(s);
-        }
+        // first thought recursion!
+        // second thought thinking of greedy approach
+
+        string a = s;
+        string b = s;
+
+        int ans1 = x*ab(a) + y*ba(a);
+        int ans2 = y*ba(b) + x*ab(b);
+        return max(ans1,ans2);
     }
 };
