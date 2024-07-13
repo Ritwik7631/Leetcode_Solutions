@@ -1,13 +1,14 @@
 class Solution {
 public:
     vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string directions) {
+        // Reorder inputs by position
         set<pair<pair<int, int>, pair<char, int>>> st;
         // position, health, direction, robot number
-        for (int i = 0; i < positions.size(); i++) {
-            int a = positions[i];
-            char b = directions[i];
-            int h = healths[i];
-            int num = i;
+        for (int i = 1; i <= positions.size(); i++) {
+            int a = positions[i-1];
+            char b = directions[i-1];
+            int h = healths[i-1];
+            int num = i - 1; // Corrected to use 0-based indexing for robot number
             st.insert({{a, h}, {b, num}});
         }
 
@@ -24,19 +25,19 @@ public:
 
             while (!stk.empty() && (dir == 'L' && stk.top().second.first == 'R')) {
                 if (heal == stk.top().first.second) {
-                    stk.pop();
-                    heal = -1; // Both robots are destroyed
+                    stk.pop(); // Both robots are destroyed
+                    heal = -1; // Mark this robot as destroyed
                     break;
                 } else if (heal < stk.top().first.second) {
                     auto top = stk.top();
                     stk.pop();
-                    top.first.second--;
+                    top.first.second--; // Reduce health of the top robot
                     stk.push(top);
                     heal = -1; // Current robot is destroyed
                     break;
                 } else {
                     stk.pop();
-                    heal--;
+                    heal--; // Current robot survives but loses 1 health
                 }
             }
 
@@ -45,12 +46,12 @@ public:
             }
         }
 
+        // Collect the results in the original order
         vector<int> ans(positions.size(), -1);
-
         while (!stk.empty()) {
             auto top = stk.top();
             stk.pop();
-            ans[top.second.second] = top.first.second;
+            ans[top.second.second] = top.first.second; // Place health in original order
         }
 
         // Remove -1 entries
