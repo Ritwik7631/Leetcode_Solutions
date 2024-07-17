@@ -9,12 +9,9 @@ public:
 
     void join(int X, int Y, vector<int> &parent)
     {
-        int upx = findpar(X, parent);
-        int upy = findpar(Y, parent);
+        if(X == Y) return;
 
-        if(upx == upy) return;
-
-        parent[upy] = upx;
+        parent[Y] = X;
     }
 
     int makeConnected(int n, vector<vector<int>>& connections) {
@@ -36,9 +33,11 @@ public:
             int upc = findpar(c, parent);
 
             if(upb == upc) extra++;
-            else components--;
-
-            join(b, c, parent);
+            else
+            {
+                components--;
+                join(upb, upc, parent);
+            } 
         }
 
         if(extra >= components - 1) return components - 1;
