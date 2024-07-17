@@ -1,70 +1,73 @@
 class Solution {
 public:
-    void DFS(int i, vector<vector<int>> &grph, vector<int> &vis, int &X)
+    void merge(int X, int Y, map<int,int> &parent)
     {
-        vis[i] = 1;
-        X++;
-        for(auto a : grph[i])
-        {
-            if(vis[a] == 0)
-            {
-                DFS(a, grph, vis, X);
-            }
-        }
+        int upx = findpar(parent, X);
+        int upy = findpar(parent, Y);
 
-        return;
+        if(upx == upy) return;
+
+        parent[upy] = upx;
+    }
+
+    int findpar(map<int,int> &parent, int X)
+    {
+        if(X == parent[X]) return X;
+
+        return parent[X] = findpar(parent, parent[X]);
     }
 
     int removeStones(vector<vector<int>>& stones) {
-        
         int n = stones.size();
 
-        vector<vector<int>> grph(n);
+        int maxr = INT_MIN;
+        int maxc = INT_MIN;
+        set<int> nodes;
+        
+        for(int i = 0; i < n; i++)
+        {
+            maxr = max(maxr, stones[i][0]);
+            maxc = max(maxc, stones[i][1]);
+        }
 
         for(int i = 0; i < n; i++)
         {
-            vector<int> rock = stones[i];
-            int x = rock[0];
-            int y = rock[1];
-            for(int j = i+1; j < n; j++)
-            {
-                vector<int> pebble = stones[j];
-                int px = pebble[0];
-                int py = pebble[1];
+            nodes.insert(stones[i][0]);
+            nodes.insert(stones[i][1] + maxr + 1);
+        }
+        int component = nodes.size();
 
-                if(px == x || py == y)
-                {
-                    grph[i].push_back(j);
-                    grph[j].push_back(i);
-                }
-            }
+        map<int,int> parent;
+
+        for(int i = 0; i < maxr + maxc + 2; i++)
+        {
+            if(nodes.count(i)) parent[i] = i;
         }
 
-        // for(int i = 0; i < grph.size(); i++)
+        // for(auto a : parent)
         // {
-        //     cout << "parent: " << i << endl;
-        //     cout << "children: ";
-        //     for(auto a : grph[i])
-        //     {
-        //         cout << a << " ";
-        //     }
-        //     cout << endl;
+        //     cout << a.first << " " << a.second;
         // }
-
-        vector<int> vis(n, 0);
-        int ans = 0;
+        // cout << endl;
+        
         for(int i = 0; i < n; i++)
         {
-            if(vis[i] == 0)
+            int row = stones[i][0];
+            int col = stones[i][1] + maxr + 1;
+
+            if(findpar(parent,row) != findpar(parent,col))
             {
-                int a = 0;
-                DFS(i, grph, vis, a);
-                ans += (a - 1);
-                // cout << "i: " << i << " " << "a: " << a << endl;
-            }
+                component--;
+                merge(row, col, parent);
+            } 
+
+            // for(auto a : parent)
+            // {
+            //     cout << a << " ";
+            // }
+            // cout << endl;
         }
 
-        return ans;
-
+        return n - component;
     }
 };
