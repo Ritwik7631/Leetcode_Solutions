@@ -1,93 +1,95 @@
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
+//User function Template for C++
+class DisjointSet {
+    vector<int> rank, parent, size;
+public:
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
 
 class Solution {
 public:
-    int findpar(int X, vector<int> &parent) {
-        if(X == parent[X]) return X;
-        return parent[X] = findpar(parent[X], parent);
-    }
-
-    void merge(vector<int> &parent, int X, int Y) {
-        int upx = findpar(X, parent);
-        int upy = findpar(Y, parent);
-        if(upx == upy) return;
-        parent[upy] = upx;
-    }
-
-    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-        unordered_map<string, string> mp1; // map from email to name
-        unordered_map<string, int> mp2;    // map from email to index
-        unordered_map<int, string> mp3;    // map from index to email
-
-        int k = 1;
-        for(int i = 0; i < accounts.size(); i++) {
-            for(int j = 1; j < accounts[i].size(); j++) {
-                if(mp2[accounts[i][j]] > 0) continue;
-                mp2[accounts[i][j]] = k;
-                mp3[k] = accounts[i][j];
-                mp1[accounts[i][j]] = accounts[i][0];
-                // cout << "Mapping email " << accounts[i][j] << " to index " << k << " and name " << accounts[i][0] << endl;
-                k++;
+    vector<vector<string>> accountsMerge(vector<vector<string>> &details) {
+        int n = details.size();
+        DisjointSet ds(n);
+        sort(details.begin(), details.end());
+        unordered_map<string, int> mapMailNode;
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < details[i].size(); j++) {
+                string mail = details[i][j];
+                if (mapMailNode.find(mail) == mapMailNode.end()) {
+                    mapMailNode[mail] = i;
+                }
+                else {
+                    ds.unionBySize(i, mapMailNode[mail]);
+                }
             }
         }
 
-        vector<int> parents(k);
-        for(int i = 1; i < parents.size(); i++) {
-            parents[i] = i;
+        vector<string> mergedMail[n];
+        for (auto it : mapMailNode) {
+            string mail = it.first;
+            int node = ds.findUPar(it.second);
+            mergedMail[node].push_back(mail);
         }
-
-        // cout << "Initial parents array: ";
-        for(int i = 1; i < parents.size(); i++) {
-            // cout << parents[i] << " ";
-        }
-        // cout << endl;
-
-        for(int i = 0; i < accounts.size(); i++) {
-            for(int j = 2; j < accounts[i].size(); j++) {
-                merge(parents, mp2[accounts[i][j]], mp2[accounts[i][j-1]]);
-                // cout << "Merging " << accounts[i][j] << " and " << accounts[i][j-1] << endl;
-            }
-        }
-
-        // cout << "Parents array after merging: ";
-        for(int i = 1; i < parents.size(); i++) {
-            // cout << parents[i] << " ";
-        }
-        // cout << endl;
 
         vector<vector<string>> ans;
-        unordered_map<int, vector<string>> mp4;
 
-        for(int i = 1; i < parents.size(); i++) {
-            parents[i] = findpar(parents[i], parents);
-            mp4[parents[i]].push_back(mp3[i]);
-            // cout << "Parent of " << mp3[i] << " is " << parents[i] << endl;
-        }
-
-        // cout << "Final parents array after path compression: ";
-        for(int i = 1; i < parents.size(); i++) {
-            // cout << parents[i] << " ";
-        }
-        // cout << endl;
-
-        for(auto &a : mp4) {
+        for (int i = 0; i < n; i++) {
+            if (mergedMail[i].size() == 0) continue;
+            sort(mergedMail[i].begin(), mergedMail[i].end());
             vector<string> temp;
-            sort(a.second.begin(), a.second.end());
-            temp = a.second;
-            temp.insert(temp.begin(), mp1[mp3[a.first]]);
-            ans.push_back(temp);
-            // cout << "Merged account for parent " << a.first << " is: ";
-            for(auto &s : temp) {
-                // cout << s << " ";
+            temp.push_back(details[i][0]);
+            for (auto it : mergedMail[i]) {
+                temp.push_back(it);
             }
-            // cout << endl;
+            ans.push_back(temp);
         }
-
+        sort(ans.begin(), ans.end());
         return ans;
     }
 };
