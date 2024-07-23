@@ -1,31 +1,29 @@
-class Solution {
-private:
-    bool isValid(int newr, int newc, int n) {
-        return newr >= 0 && newr < n && newc >= 0 && newc < n;
-    }
+#include <vector>
+#include <unordered_set>
+#include <set>
+#include <algorithm>
+#include <iostream>
 
+using namespace std;
+
+class Solution {
+public:
     // Find with path compression
     int findpar(vector<int>& parent, int X) {
         if (parent[X] == X) return X;
         return parent[X] = findpar(parent, parent[X]);
     }
 
-    // Union with size tracking
-    void unionBySize(vector<int>& parent, vector<int>& size, int X, int Y) {
+    // Union with size update
+    void merge(vector<int>& parent, vector<int>& size, int X, int Y) {
         int rootX = findpar(parent, X);
         int rootY = findpar(parent, Y);
         if (rootX != rootY) {
-            if (size[rootX] < size[rootY]) {
-                parent[rootX] = rootY;
-                size[rootY] += size[rootX];
-            } else {
-                parent[rootY] = rootX;
-                size[rootX] += size[rootY];
-            }
+            parent[rootY] = rootX;
+            size[rootX] += size[rootY]; // Update the size of the root component
         }
     }
 
-public:
     int largestIsland(vector<vector<int>>& grid) {
         int n = grid.size();
         vector<int> parent(n * n);
@@ -37,50 +35,58 @@ public:
         }
 
         vector<int> rdel = {-1, 0, 1, 0};
-        vector<int> cdel = {0, -1, 0, 1};
+        vector<int> cdel = {0, 1, 0, -1};
 
-        // Step 1: Union adjacent 1s
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < n; col++) {
-                if (grid[row][col] == 0) continue;
-                for (int ind = 0; ind < 4; ind++) {
-                    int newr = row + rdel[ind];
-                    int newc = col + cdel[ind];
-                    if (isValid(newr, newc, n) && grid[newr][newc] == 1) {
-                        int nodeNo = row * n + col;
-                        int adjNodeNo = newr * n + newc;
-                        unionBySize(parent, size, nodeNo, adjNodeNo);
+        // First pass: Union all 1s
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    int a = i * n + j;
+                    for (int k = 0; k < 4; k++) {
+                        int nx = i + rdel[k];
+                        int ny = j + cdel[k];
+                        if (nx >= 0 && nx < n && ny >= 0 && ny < n && grid[nx][ny] == 1) {
+                            int b = nx * n + ny;
+                            merge(parent, size, a, b); // Merge adjacent 1s
+                        }
                     }
                 }
             }
         }
 
-        // Step 2: Check each 0 to find the largest possible island
-        int mx = 0;
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < n; col++) {
-                if (grid[row][col] == 1) continue;
+        int ans = 0;
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(grid[i][j] == 1) continue;
                 set<int> components;
-                for (int ind = 0; ind < 4; ind++) {
-                    int newr = row + rdel[ind];
-                    int newc = col + cdel[ind];
-                    if (isValid(newr, newc, n) && grid[newr][newc] == 1) {
-                        components.insert(findpar(parent, newr * n + newc));
+                for(int k = 0; k < 4; k++)
+                {
+                    int nx = i + rdel[k];
+                    int ny = j + cdel[k];
+                    if(nx >= 0 && nx < n && ny >= 0 && ny < n)
+                    {
+                        if(grid[nx][ny] == 1)
+                        {
+                            components.insert(findpar(parent, nx*n + ny));
+                        }
                     }
                 }
-                int sizeTotal = 0;
-                for (auto it : components) {
-                    sizeTotal += size[it];
+                int total = 0;
+                for(auto it : components)
+                {
+                    total += size[it];
                 }
-                mx = max(mx, sizeTotal + 1);
+                ans = max(ans, total + 1);
             }
         }
 
-        // Step 3: Find the largest island without flipping any 0 to 1
-        for (int cellNo = 0; cellNo < n * n; cellNo++) {
-            mx = max(mx, size[findpar(parent, cellNo)]);
+        for(int i = 0; i < n*n; i++)
+        {
+            ans = max(ans, size[findpar(parent, i)]);
         }
 
-        return mx;
+        return ans;
     }
 };
