@@ -3,7 +3,6 @@
 #include <unordered_set>
 #include <set>
 #include <algorithm>
-#include <climits>
 
 using namespace std;
 
@@ -15,18 +14,20 @@ public:
         return parent[X] = findpar(parent, parent[X]);
     }
 
-    // Plain union
-    void merge(vector<int>& parent, int X, int Y) {
+    // Union with size tracking
+    void merge(vector<int>& parent, vector<int>& size, int X, int Y) {
         int rootX = findpar(parent, X);
         int rootY = findpar(parent, Y);
         if (rootX != rootY) {
             parent[rootY] = rootX;
+            size[rootX] += size[rootY]; // Update the size of the root component
         }
     }
 
     int largestIsland(vector<vector<int>>& grid) {
         int n = grid.size();
         vector<int> parent(n * n);
+        vector<int> size(n * n, 1); // Initialize size array to 1 for each cell
 
         // Initialize each node's parent to itself
         for (int i = 0; i < parent.size(); i++) {
@@ -46,26 +47,27 @@ public:
                         int ny = j + cdel[k];
                         if (nx >= 0 && nx < n && ny >= 0 && ny < n && grid[nx][ny] == 1) {
                             int b = nx * n + ny;
-                            merge(parent, a, b); // Merge adjacent 1s
+                            merge(parent, size, a, b); // Merge adjacent 1s
                         }
                     }
                 }
             }
         }
 
-        // Calculate the size of each island using a map
-        unordered_map<int, int> islandSize;
+        int largestisland = 0;
+
+        // Populate island sizes in a map after the first pass
+        unordered_map<int, int> mp;
         for (int i = 0; i < n * n; ++i) {
             int root = findpar(parent, i);
             if (grid[i / n][i % n] == 1) {
-                islandSize[root]++;
+                mp[root] = size[root];
             }
         }
 
-        int maxIsland = 0;
         // Find the initial largest island
-        for (auto& a : islandSize) {
-            maxIsland = max(maxIsland, a.second);
+        for (auto& a : mp) {
+            largestisland = max(largestisland, a.second);
         }
 
         // Second pass: Check each 0 to find the largest possible island
@@ -83,13 +85,14 @@ public:
                         }
                     }
                     for (auto it : components) {
-                        newSize += islandSize[it]; // Sum the sizes of adjacent islands
+                        newSize += mp[it]; // Sum the sizes of adjacent islands
                     }
-                    maxIsland = max(maxIsland, newSize);
+                    largestisland = max(largestisland, newSize);
                 }
             }
         }
 
-        return maxIsland;
+        return largestisland;
     }
 };
+
