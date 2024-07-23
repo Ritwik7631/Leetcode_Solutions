@@ -5,26 +5,26 @@ public:
         // B : 1 5 7 8
         // C : 4 6
 
-        unordered_map<char,vector<int>> mp;
-        for(int i = 0; i < s.size(); i++)
+        unordered_map<char,int> mp;
+
+        for(auto a : s)
         {
-            mp[s[i]].push_back(i);
+            mp[a]++;
         }
-        int n = s.size();
-        int deletions = 0;
+        int ans = 0;
         for(auto a : mp)
         {
-            int vec = a.second.size();
-            int count = 0;
-            while(vec >= 3)
+            if(a.second % 2 == 0)
             {
-                vec -= 2;
-                count++;
+                ans += 2;
             }
-            deletions += (count*2);
+            else
+            {
+                ans++;
+            }
         }
 
-        return n - deletions;
+        return ans;
 
 
     }
