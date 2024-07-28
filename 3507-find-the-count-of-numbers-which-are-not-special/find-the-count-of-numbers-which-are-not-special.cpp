@@ -1,21 +1,20 @@
+#include <cmath>
+#include <iostream>
+#include <vector>
+
 class Solution {
 public:
-    bool isPrime(int x) {
-        if (x <= 1) {
-            return false;
-        }
-        if (x == 2) {
-            return true;
-        }
-        if (x % 2 == 0) {
-            return false;
-        }
-        for (int i = 3; i <= std::sqrt(x); i += 2) {
-            if (x % i == 0) {
-                return false;
+    std::vector<bool> sieve(int maxN) {
+        std::vector<bool> isPrime(maxN + 1, true);
+        isPrime[0] = isPrime[1] = false;
+        for (int i = 2; i * i <= maxN; ++i) {
+            if (isPrime[i]) {
+                for (int j = i * i; j <= maxN; j += i) {
+                    isPrime[j] = false;
+                }
             }
         }
-        return true;
+        return isPrime;
     }
 
     int nonSpecialCount(int l, int r) {
@@ -30,10 +29,11 @@ public:
             upper = upper - 1;
         }
 
-        int count = 0;
+        std::vector<bool> isPrime = sieve(upper);
 
+        int count = 0;
         for (int i = lower; i <= upper; ++i) {
-            if (isPrime(i)) {
+            if (isPrime[i]) {
                 count++;
             }
         }
