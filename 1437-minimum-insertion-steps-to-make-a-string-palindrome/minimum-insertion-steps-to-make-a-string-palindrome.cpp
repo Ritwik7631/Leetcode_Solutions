@@ -18,9 +18,32 @@ public:
         // int l = 0;
         // int r = s.size() - 1;
 
+        // int n = s.size();
+
+        // vector<vector<int>> dp(s.size()+1, vector<int> (s.size()+1, 0));
+
+        // for(int l = n-1; l >= 0; l--)
+        // {
+        //     for(int r = 0; r < n; r++)
+        //     {
+        //         if(l >= r) continue;
+
+        //         if(s[l] == s[r])
+        //         {
+        //             dp[l][r] = dp[l+1][r-1];
+        //             continue;
+        //         }
+                
+        //         dp[l][r] = 1 + min(dp[l][r-1], dp[l+1][r]);
+        //     }
+        // }
+
+        // return dp[0][n-1];
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         int n = s.size();
 
-        vector<vector<int>> dp(s.size()+1, vector<int> (s.size()+1, 0));
+        vector<int> current(n, 0);
+        vector<int> next(n, 0);
 
         for(int l = n-1; l >= 0; l--)
         {
@@ -30,15 +53,17 @@ public:
 
                 if(s[l] == s[r])
                 {
-                    dp[l][r] = dp[l+1][r-1];
+                    current[r] = next[r-1];
                     continue;
                 }
                 
-                dp[l][r] = 1 + min(dp[l][r-1], dp[l+1][r]);
+                current[r] = 1 + min(current[r-1], next[r]);
             }
+
+            next = current;
         }
 
-        return dp[0][n-1];
+        return next[n-1];
 
     }
 };
