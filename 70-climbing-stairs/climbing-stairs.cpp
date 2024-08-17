@@ -14,32 +14,32 @@ public:
         // vector<int> dp(n+1, -1);
         // return fn(n, dp);
 // -------------------------------------------------------------------------------------
-        vector<int> dp(n+1, 0);
-        dp[0] = 1;
-        dp[1] = 1;
-        for(int i = 2; i <= n; i++)
-        {
-            dp[i] = dp[i-1] + dp[i-2];
-        }
-
-        return dp[n];
-
-
-
-        // int a = 1;
-        // int b = 1;
-
-        // int cur;
-
+        // vector<int> dp(n+1, 0);
+        // dp[0] = 1;
+        // dp[1] = 1;
         // for(int i = 2; i <= n; i++)
         // {
-        //     cur = a + b;
-
-        //     a = b;
-        //     b = cur;
-            
+        //     dp[i] = dp[i-1] + dp[i-2];
         // }
+
+        // return dp[n];
+
+// ----------------------------------------------------------------------------------------
+
+        int a = 1;
+        int b = 1;
+
+        int cur;
+
+        for(int i = 2; i <= n; i++)
+        {
+            cur = a + b;
+
+            a = b;
+            b = cur;
+            
+        }
         
-        // return b;
+        return b;
     }
 };
