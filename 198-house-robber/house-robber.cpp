@@ -24,7 +24,7 @@ public:
         // return fn(n-1, nums, dp);
 // ----------------------------------------------------------------------
         int n = nums.size();
-        // if (n == 0) return 0;
+
         if (n == 1) return nums[0];
 
         vector<int> dp(n+1, 0);
@@ -42,23 +42,22 @@ public:
 
         return dp[n-1];
 // -----------------------------------------------------------------------------------
-        // int a = nums[0];
-        // int b = max(nums[0], nums[1]);
-        // int cur;
+        int a = nums[0];
+        int b = max(nums[0], nums[1]);
+        int cur;
 
-        // for(int i = 2; i < n; i++)
-        // {
-        //     int pick = nums[i] + a;
-        //     int notpick = b;
+        for(int i = 2; i < n; i++)
+        {
+            int pick = nums[i] + a;
+            int notpick = b;
 
-        //     cur = max(pick, notpick);
+            cur = max(pick, notpick);
 
-        //     a = b;
-        //     b = cur;
+            a = b;
+            b = cur;
             
+        }
 
-        // }
-
-        // return b;
+        return b;
     }
 };
