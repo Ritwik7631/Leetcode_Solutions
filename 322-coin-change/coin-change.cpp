@@ -1,5 +1,6 @@
 class Solution {
 public:
+    const long long mod = 1e9 + 7;
     // int fn(int i, int a, vector<int>& coins, vector<vector<int>> &dp)
     // {   
         // if(a == 0) return 0;
@@ -34,7 +35,7 @@ public:
 
 // ----------------------------------------------------------------
         int n = coins.size();
-        vector<vector<int>> dp(n, vector<int> (amount+2, 1000000));
+        vector<vector<int>> dp(n, vector<int> (amount+2, amount+1));
 
         for(int i = 0; i < n; i++)
         {
@@ -45,26 +46,30 @@ public:
         {
             for(int a = 1; a <= amount; a++)
             {
-                int notpick = 1000000;
+                int notpick = amount + 1;
 
                 if(i-1 >= 0) notpick = dp[i-1][a];
 
-                int pick = 1000000;
+                int pick = amount + 1;
 
                 int val = a - coins[i];
 
                 if(val >= 0)
                 {
-                    pick =  dp[i][val] + 1;
+                    pick =  dp[i][val]%mod + 1;
                 }
 
                 dp[i][a] = min(pick, notpick);                
             }
         }
 
-        if(dp[n-1][amount] == 1000000) return -1;
+        if(dp[n-1][amount] >= amount + 1) return -1;
 
         return dp[n-1][amount];
+
+// -----------------------------------------------------------------------------
+
+
     }
 };
 
