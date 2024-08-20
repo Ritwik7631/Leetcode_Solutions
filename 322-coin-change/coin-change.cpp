@@ -2,22 +2,26 @@ class Solution {
 public:
     int fn(int i, int a, vector<int>& coins, vector<vector<int>> &dp)
     {
-        if(a <= 0)
-        {
-            return 0;
-        }
+        // if(a <= 0)
+        // {
+        //     return 0;
+        // }
 
-        if(i <= 0)
-        {
-            if(a % coins[0] == 0)
-            {
-                return a/coins[0];
-            }
-            else
-            {
-                return 1000000;
-            }
-        }
+        // if(i <= 0)
+        // {
+        //     if(a % coins[0] == 0)
+        //     {
+        //         return a/coins[0];
+        //     }
+        //     else
+        //     {
+        //         return 1000000;
+        //     }
+        // }
+
+        if(a == 0) return 0;
+
+        if(i < 0) return 1000000;
 
         if(dp[i][a] != -1) return dp[i][a];
 
