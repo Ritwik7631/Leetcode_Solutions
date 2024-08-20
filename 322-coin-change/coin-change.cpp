@@ -1,53 +1,70 @@
 class Solution {
 public:
-    int fn(int i, int a, vector<int>& coins, vector<vector<int>> &dp)
-    {
-        // if(a <= 0)
+    // int fn(int i, int a, vector<int>& coins, vector<vector<int>> &dp)
+    // {   
+        // if(a == 0) return 0;
+
+        // if(i < 0) return 1000000;
+
+        // if(dp[i][a] != -1) return dp[i][a];
+
+        // int notpick = fn(i-1, a, coins, dp);
+
+        // int pick = 1000000;
+
+        // if(a - coins[i] >= 0)
         // {
-        //     return 0;
+        //     pick =  fn(i, a - coins[i], coins, dp) + 1;
         // }
 
-        // if(i <= 0)
-        // {
-        //     if(a % coins[0] == 0)
-        //     {
-        //         return a/coins[0];
-        //     }
-        //     else
-        //     {
-        //         return 1000000;
-        //     }
-        // }
-
-        if(a == 0) return 0;
-
-        if(i < 0) return 1000000;
-
-        if(dp[i][a] != -1) return dp[i][a];
-
-        int notpick = fn(i-1, a, coins, dp);
-
-        int pick = 1000000;
-
-        if(a - coins[i] >= 0)
-        {
-            pick =  fn(i, a - coins[i], coins, dp) + 1;
-        }
-
-        return dp[i][a] = min(pick, notpick);
+        // return dp[i][a] = min(pick, notpick);
         
-    }
+    // }
 
     int coinChange(vector<int>& coins, int amount) {
+        // int n = coins.size();
+
+        // vector<vector<int>> dp(n, vector<int> (amount+2, -1));
+
+        // int ans = fn(n-1, amount, coins, dp);
+
+        // if(ans == 1000000) return -1;
+
+        // return ans;
+
+// ----------------------------------------------------------------
         int n = coins.size();
+        vector<vector<int>> dp(n, vector<int> (amount+2, 1000000));
 
-        vector<vector<int>> dp(n, vector<int> (amount+2, -1));
+        for(int i = 0; i < n; i++)
+        {
+            dp[i][0] = 0;
+        }
 
-        int ans = fn(n-1, amount, coins, dp);
+        for(int i = 0; i < n; i++)
+        {
+            for(int a = 1; a <= amount; a++)
+            {
+                int notpick = 1000000;
 
-        if(ans == 1000000) return -1;
+                if(i-1 >= 0) notpick = dp[i-1][a];
 
-        return ans;
+                int pick = 1000000;
+
+                int val = a - coins[i];
+
+                if(val >= 0)
+                {
+                    pick =  dp[i][val] + 1;
+                }
+
+                dp[i][a] = min(pick, notpick);                
+            }
+        }
+
+        if(dp[n-1][amount] == 1000000) return -1;
+
+        return dp[n-1][amount];
     }
 };
 
