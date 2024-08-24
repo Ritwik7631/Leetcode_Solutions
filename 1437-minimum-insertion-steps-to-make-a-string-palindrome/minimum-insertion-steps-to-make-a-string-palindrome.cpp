@@ -1,69 +1,27 @@
 class Solution {
 public:
-    // int fn(int l, int r, string &s, vector<vector<int>> &dp)
-    // {
-    //     if(l >= r) return 0;
-
-    //     if(dp[l][r] != -1) return dp[l][r];
-
-    //     if(s[l] == s[r])
-    //     {
-    //         return dp[l][r] = fn(l+1, r-1, s, dp);
-    //     }
-        
-    //     return dp[l][r] = 1 + min(fn(l, r-1, s, dp), fn(l+1, r, s, dp));
-    // }
-
-    int minInsertions(string s) {
-        // int l = 0;
-        // int r = s.size() - 1;
-
-        // int n = s.size();
-
-        // vector<vector<int>> dp(s.size()+1, vector<int> (s.size()+1, 0));
-
-        // for(int l = n-1; l >= 0; l--)
-        // {
-        //     for(int r = 0; r < n; r++)
-        //     {
-        //         if(l >= r) continue;
-
-        //         if(s[l] == s[r])
-        //         {
-        //             dp[l][r] = dp[l+1][r-1];
-        //             continue;
-        //         }
-                
-        //         dp[l][r] = 1 + min(dp[l][r-1], dp[l+1][r]);
-        //     }
-        // }
-
-        // return dp[0][n-1];
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        int n = s.size();
-
-        vector<int> current(n, 0);
-        vector<int> next(n, 0);
-
-        for(int l = n-1; l >= 0; l--)
+    int fn(int i, int j, string &s, vector<vector<int>> &dp)
+    {
+        if(i > j)
         {
-            for(int r = 0; r < n; r++)
-            {
-                if(l >= r) continue;
-
-                if(s[l] == s[r])
-                {
-                    current[r] = next[r-1];
-                    continue;
-                }
-                
-                current[r] = 1 + min(current[r-1], next[r]);
-            }
-
-            next = current;
+            return 0;
         }
 
-        return next[n-1];
+        if(dp[i][j] != -1) return dp[i][j];
 
+        if(s[i] == s[j])
+        {
+            return dp[i][j] = fn(i+1, j-1, s,dp);
+        }
+
+        return dp[i][j] = 1 + min(fn(i, j-1, s,dp), fn(i+1, j, s,dp));
+    }
+
+    int minInsertions(string s) {
+        int n = s.size()-1;
+        int l = 0;
+        int r = n;
+        vector<vector<int>> dp(n+1, vector<int> (n+1, -1));
+        return fn(l,r,s,dp);
     }
 };
