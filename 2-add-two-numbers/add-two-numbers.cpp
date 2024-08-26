@@ -16,8 +16,8 @@ public:
 
         int carryover = 0;
 
-        ListNode* head_ans = new ListNode();
-        ListNode* temp = head_ans;
+        ListNode* ans = NULL;
+        ListNode* temp = ans;
 
         while(temp1 != NULL || temp2 != NULL)
         {
@@ -44,8 +44,9 @@ public:
                 else carryover = 0;
             }
 
-            temp->next = current;
-            temp = temp->next;
+            if(temp != NULL) temp->next = current;
+            else ans = current;
+            temp = current;
 
             if(temp1 != NULL) temp1 = temp1->next;
             if(temp2 != NULL) temp2 = temp2->next;
@@ -57,8 +58,6 @@ public:
             last->val = 1;
             temp->next = last;
         }
-
-        ListNode* ans = head_ans->next;
 
         return ans;
     }
