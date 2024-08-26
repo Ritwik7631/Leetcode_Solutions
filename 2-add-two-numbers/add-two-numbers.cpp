@@ -19,30 +19,16 @@ public:
         ListNode* ans = NULL;
         ListNode* temp = ans;
 
-        while(temp1 != NULL || temp2 != NULL)
+        while(temp1 != NULL || temp2 != NULL || carryover != 0)
         {
             ListNode* current = new ListNode();
-
-            if(temp1 != NULL && temp2 != NULL)
-            {
-                current->val = (temp1->val + temp2->val + carryover)%10;
-
-                if(temp1->val + temp2->val + carryover >= 10) carryover = 1;
-                else carryover = 0;
-
-            }
-            else if(temp1 != NULL && temp2 == NULL)
-            {
-                current->val = (temp1->val + 0 + carryover)%10;
-                if(temp1->val + carryover >= 10) carryover = 1;
-                else carryover = 0;
-            }
-            else
-            {
-                current->val = (temp2->val + 0 + carryover)%10;
-                if(temp2->val + carryover >= 10) carryover = 1;
-                else carryover = 0;
-            }
+            int cur = 0;
+            if(temp1 != NULL) cur += temp1->val;
+            if(temp2 != NULL) cur += temp2->val;
+            cur += carryover;
+            carryover = 0;
+            current->val = cur%10;
+            carryover = cur/10;
 
             if(temp != NULL) temp->next = current;
             else ans = current;
@@ -50,13 +36,6 @@ public:
 
             if(temp1 != NULL) temp1 = temp1->next;
             if(temp2 != NULL) temp2 = temp2->next;
-        }
-
-        if(carryover == 1)
-        {
-            ListNode* last = new ListNode();
-            last->val = 1;
-            temp->next = last;
         }
 
         return ans;
