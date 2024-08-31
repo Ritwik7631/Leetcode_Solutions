@@ -2,33 +2,41 @@
 
 using namespace std;
 
-int getAns(vector<int>& arr, int n, int ind, int prev_index, vector<vector<int>>& dp) {
-    // Base condition
-    if (ind == n)
+int fn(int i, int lastpick, vector<int> &arr, int n, vector<vector<int>> &dp)
+{
+    // Base case: If we've moved before the first element, return 0.
+    if (i < 0)
+    {
         return 0;
-        
-    if (dp[ind][prev_index + 1] != -1)
-        return dp[ind][prev_index + 1];
-    
-    int notTake = 0 + getAns(arr, n, ind + 1, prev_index, dp);
-    
-    int take = 0;
-    
-    if (prev_index == -1 || arr[ind] > arr[prev_index]) {
-        take = 1 + getAns(arr, n, ind + 1, ind, dp);
     }
-    
-    return dp[ind][prev_index + 1] = max(notTake, take);
+
+    // If the result is already computed, return it.
+    if (dp[i][lastpick] != -1) return dp[i][lastpick];
+
+    // Option 1: Do not pick the current element.
+    int notpick = fn(i - 1, lastpick, arr, n, dp);
+
+    // Option 2: Pick the current element (if it's valid to do so).
+    int pick = INT_MIN;
+
+    if (lastpick == n || arr[i] < arr[lastpick])
+    {
+        pick = fn(i - 1, i, arr, n, dp) + 1;
+    }
+
+    // Store and return the maximum of the two options.
+    return dp[i][lastpick] = max(pick, notpick);
 }
 
 class Solution {
 public:
     int lengthOfLIS(vector<int>& arr) {
         int n = arr.size();
-        vector<vector<int>> dp(n, vector<int>(n + 1, -1));
-        
-        return getAns(arr, n, 0, -1, dp);
 
+        // Initialize the dp array with -1 to indicate uncomputed states.
+        vector<vector<int>> dp(n, vector<int>(n + 1, -1));
+
+        // Start the recursion from the last index and an initial dummy 'lastpick' that is out of bounds.
+        return fn(n - 1, n, arr, n, dp);
     }
 };
-
