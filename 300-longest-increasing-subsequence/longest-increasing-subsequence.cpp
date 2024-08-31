@@ -2,36 +2,33 @@
 
 using namespace std;
 
-int fn(int i, int lastpick, vector<int> &arr, int n, vector<vector<int>> &dp)
-{
-    if(i >= n)
-    {
+int getAns(vector<int>& arr, int n, int ind, int prev_index, vector<vector<int>>& dp) {
+    // Base condition
+    if (ind == n)
         return 0;
+        
+    if (dp[ind][prev_index + 1] != -1)
+        return dp[ind][prev_index + 1];
+    
+    int notTake = 0 + getAns(arr, n, ind + 1, prev_index, dp);
+    
+    int take = 0;
+    
+    if (prev_index == -1 || arr[ind] > arr[prev_index]) {
+        take = 1 + getAns(arr, n, ind + 1, ind, dp);
     }
-
-    if(dp[i][lastpick] != -1) return dp[i][lastpick];
-
-    int notpick = fn(i+1, lastpick, arr, n, dp);
-
-    int pick = INT_MIN;
-
-    if(lastpick == 0 || arr[i-1] > arr[lastpick-1])
-    {
-        pick = fn(i+1, i, arr, n, dp) + 1;
-    }
-
-    return dp[i][lastpick] = max(pick, notpick);
+    
+    return dp[ind][prev_index + 1] = max(notTake, take);
 }
 
 class Solution {
 public:
     int lengthOfLIS(vector<int>& arr) {
-
         int n = arr.size();
+        vector<vector<int>> dp(n, vector<int>(n + 1, -1));
+        
+        return getAns(arr, n, 0, -1, dp);
 
-        vector<vector<int>> dp(n+2, vector<int> (n+2, -1));
-
-        return fn(1, 0, arr, n+1, dp);
     }
 };
 
