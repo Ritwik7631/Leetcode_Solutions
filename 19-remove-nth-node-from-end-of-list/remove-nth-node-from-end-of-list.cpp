@@ -66,11 +66,11 @@ public:
         }
 
         ListNode* c = a;
-
-        c = c->next;
-        c = c->next;
+        ListNode* temp = a->next;
+        c = c->next->next;
 
         a->next = c;
+        delete temp;
 
         return head;
 
