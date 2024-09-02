@@ -10,56 +10,42 @@
  */
 class Solution {
 public:
-    ListNode* reversehead = nullptr;
-
-    // Function to create a copy of the linked list
-    ListNode* copyList(ListNode* head) {
-        if (head == nullptr) return nullptr;
-
-        ListNode* newHead = new ListNode(head->val);
-        ListNode* current = newHead;
-        ListNode* original = head->next;
-
-        while (original != nullptr) {
-            current->next = new ListNode(original->val);
-            current = current->next;
-            original = original->next;
+    // Function to reverse the linked list
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        while (curr != nullptr) {
+            ListNode* nextTemp = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextTemp;
         }
-
-        return newHead;
-    }
-
-    // Your recursive function to reverse the list
-    void fn(ListNode* i, ListNode* j) {
-        if (i == nullptr) {
-            reversehead = j; // Set the new head of the reversed list
-            return;
-        }
-
-        fn(i->next, i); // Recursively reverse the rest of the list
-
-        i->next = j; // Reverse the link
+        return prev; // Return new head of the reversed list
     }
 
     bool isPalindrome(ListNode* head) {
         if (head == nullptr || head->next == nullptr) return true; // Edge cases: empty or single node list
 
-        // Step 1: Create a copy of the list
-        ListNode* copiedList = copyList(head);
+        // Step 1: Find the middle of the list
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
 
-        // Step 2: Reverse the copied list
-        fn(copiedList, nullptr);
+        // Step 2: Reverse the second half of the list
+        ListNode* secondHalfReversed = reverseList(slow);
 
-        // Step 3: Compare the original list and the reversed copied list
-        ListNode* org = head;
-        ListNode* rev = reversehead; // Start from the head of the reversed copied list
-
-        while (org != nullptr && rev != nullptr) {
-            if (org->val != rev->val) {
+        // Step 3: Compare the first half and the reversed second half
+        ListNode* firstHalf = head;
+        ListNode* secondHalf = secondHalfReversed;
+        while (secondHalf != nullptr) {
+            if (firstHalf->val != secondHalf->val) {
                 return false; // Mismatch found, not a palindrome
             }
-            org = org->next;
-            rev = rev->next;
+            firstHalf = firstHalf->next;
+            secondHalf = secondHalf->next;
         }
 
         // If all nodes matched, the list is a palindrome
