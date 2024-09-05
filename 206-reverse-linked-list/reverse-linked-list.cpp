@@ -12,18 +12,17 @@ class Solution {
 public:
     ListNode* ans = nullptr;
 
-    void fn(ListNode* curr, ListNode* prev)
-    {   
+    void fn(ListNode* curr)
+    {  
         if(curr->next == nullptr)
         {
             ans = curr;
-            curr->next = prev;
             return;
         }
 
-        fn(curr->next, curr);
+        fn(curr->next);
 
-        curr->next = prev;
+        curr->next->next = curr;  
     }
 
     ListNode* reverseList(ListNode* head) {
@@ -32,7 +31,9 @@ public:
 
         if(head == nullptr) return head;
 
-        fn(head, nullptr);
+        fn(head);
+
+        head->next = nullptr;
 
         return ans;
     }
