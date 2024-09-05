@@ -10,27 +10,32 @@
  */
 class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        if(head == NULL) return head;
-
-        ListNode* one = head;
-        ListNode* two = head;
-        ListNode* three = NULL;
-
-        one = one->next;
-
-        while(two != NULL)
+    void fn(ListNode* curr, ListNode* prev)
+    {   
+        if(curr->next == nullptr)
         {
-            two->next = three;
-            three = two;
-            two = one;
-            if(one != NULL) one = one->next;
+            curr->next = prev;
+            return;
         }
 
-        return three;
+        fn(curr->next, curr);
 
+        curr->next = prev;
+    }
 
+    ListNode* reverseList(ListNode* head) {
         
-        
+        ListNode* mover = head;
+
+        if(head == nullptr) return head;
+
+        while(mover->next != nullptr)
+        {
+            mover = mover->next;
+        }
+
+        fn(head, nullptr);
+
+        return mover;
     }
 };
