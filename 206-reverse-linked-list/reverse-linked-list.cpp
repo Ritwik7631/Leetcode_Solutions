@@ -10,10 +10,13 @@
  */
 class Solution {
 public:
+    ListNode* ans = nullptr;
+
     void fn(ListNode* curr, ListNode* prev)
     {   
         if(curr->next == nullptr)
         {
+            ans = curr;
             curr->next = prev;
             return;
         }
@@ -29,13 +32,8 @@ public:
 
         if(head == nullptr) return head;
 
-        while(mover->next != nullptr)
-        {
-            mover = mover->next;
-        }
-
         fn(head, nullptr);
 
-        return mover;
+        return ans;
     }
 };
