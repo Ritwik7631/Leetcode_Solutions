@@ -10,45 +10,63 @@
  */
 class Solution {
 public:
-    // Function to reverse the linked list
-    ListNode* reverseList(ListNode* head) {
-        ListNode* prev = nullptr;
-        ListNode* curr = head;
-        while (curr != nullptr) {
-            ListNode* nextTemp = curr->next;
+    ListNode* slow = nullptr;
+
+    void fn(ListNode* curr, ListNode* prev)
+    {
+        // cout << "hi" << endl;
+
+        if(curr == slow)
+        {
             curr->next = prev;
-            prev = curr;
-            curr = nextTemp;
+            return;
         }
-        return prev; // Return new head of the reversed list
+
+        fn(curr->next, curr);
+
+        curr->next = prev;
+
+        return;
     }
 
     bool isPalindrome(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) return true; // Edge cases: empty or single node list
 
-        // Step 1: Find the middle of the list
-        ListNode* slow = head;
+        slow = head;
         ListNode* fast = head;
-        while (fast != nullptr && fast->next != nullptr) {
-            slow = slow->next;
+
+        while(fast != nullptr && fast->next != nullptr)
+        {
             fast = fast->next->next;
+            if(fast != nullptr) slow = slow->next;
+            // cout << slow->val << " " << fast->val << endl;
         }
 
-        // Step 2: Reverse the second half of the list
-        ListNode* secondHalfReversed = reverseList(slow);
+        ListNode* x = slow->next;
+        fn(head, nullptr);        
+        
+        if(fast != NULL)
+        {
+            slow = slow->next;
+            // cout << fast->val;
+        }
+        
+        // cout << slow->val << " " << fast->val << endl;
 
-        // Step 3: Compare the first half and the reversed second half
-        ListNode* firstHalf = head;
-        ListNode* secondHalf = secondHalfReversed;
-        while (secondHalf != nullptr) {
-            if (firstHalf->val != secondHalf->val) {
-                return false; // Mismatch found, not a palindrome
-            }
-            firstHalf = firstHalf->next;
-            secondHalf = secondHalf->next;
+        // now slow now becomes new reverse head
+
+        // cout << x->val << endl;
+
+        // cout << x->val << " " << slow->val;
+
+        while(slow != nullptr && x != nullptr)
+        {
+            // cout << slow->val << " " << x->val << endl;
+            if(slow->val != x->val) return false;
+
+            slow = slow->next;
+            x = x->next;
         }
 
-        // If all nodes matched, the list is a palindrome
         return true;
     }
 };
