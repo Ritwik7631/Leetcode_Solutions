@@ -38,7 +38,7 @@ public:
 
     //     return newhead;
         if(head == nullptr || head->next == nullptr) return head;
-        if(k == 0) return head;
+        
 
         ListNode* mover = head;
         int len = 1;
@@ -49,10 +49,11 @@ public:
             len++;
         }
 
+        k = k%len;
+        if(k == 0) return head;
+        
         mover->next = head;
 
-        k = k%len;
-        
         len = len-k;
 
         mover = head;
