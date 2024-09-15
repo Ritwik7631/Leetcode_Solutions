@@ -1,80 +1,75 @@
 class Solution {
 public:
-    string beginWord;
-    unordered_map<string, int> mp;
-    vector<string> temp;
     vector<vector<string>> ans;
-
-    void DFS(string currentWord)
+    vector<string> temp;
+    void DFS(string current, string stop, unordered_map<string, int> &mp)
     {
-        if(currentWord == beginWord)
+        temp.push_back(current);
+
+        if(current == stop)
         {
-            temp.push_back(beginWord);
             reverse(temp.begin(), temp.end());
             ans.push_back(temp);
             reverse(temp.begin(), temp.end());
             temp.pop_back();
-
             return;
         }
 
-        temp.push_back(currentWord);
+        string dupl = current;
 
-        string prev = currentWord;
-
-        for(int i = 0; i < currentWord.size(); i++)
+        for(int i = 0; i < current.size(); i++)
         {
-            char original = currentWord[i];
-            for(char ch = 'a'; ch <= 'z'; ch++)
-            {
-                currentWord[i] = ch;
+            char original = current[i];
 
-                if(mp[currentWord] != 0 && mp[currentWord] + 1 == mp[prev])
+            for(char a = 'a'; a <= 'z'; a++)
+            {
+                current[i] = a;
+
+                if(mp[current] + 1 == mp[dupl])
                 {
-                    DFS(currentWord);
+                    DFS(current, stop, mp);
                 }
-                
             }
-            currentWord[i] = original;
+            current[i] = original;
         }
 
         temp.pop_back();
 
+        return;
     }
 
-    vector<vector<string>> findLadders(string b, string endWord, vector<string>& wordList) {
-        
-        beginWord = b;
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        set<string> st(wordList.begin(), wordList.end());
 
-        mp.clear();
-        temp.clear();
-        ans.clear();
+        queue<string> q;
+
+        q.push(beginWord);
+
+        st.erase(beginWord);
+
+        unordered_map<string, int> mp;
 
         mp[beginWord] = 1;
 
-        queue<string> q;
-        set<string> st(wordList.begin(), wordList.end());
-        st.erase(beginWord);
-        q.push(beginWord);
-
-        while(!q.empty())
+        while(!q.empty() && q.front() != endWord)
         {
             string word = q.front();
-            string prev = word;
+            string dupl = word;
             q.pop();
 
             for(int i = 0; i < word.size(); i++)
             {
                 char original = word[i];
-                for(char ch = 'a'; ch <= 'z'; ch++)
+
+                for(char a = 'a'; a <= 'z'; a++)
                 {
-                    word[i] = ch;
+                    word[i] = a;
 
-                    if(st.count(word) != 0)
+                    if(st.count(word) == 1)
                     {
-                        mp[word] = mp[prev] + 1;
-
                         st.erase(word);
+
+                        mp[word] = mp[dupl] + 1;
 
                         q.push(word);
                     }
@@ -83,16 +78,8 @@ public:
             }
         }
 
-        DFS(endWord);
+        DFS(endWord, beginWord, mp);
 
         return ans;
-
     }
 };
-
-/*
-abc abd aed
-
-abc abd afd
-
-*/
