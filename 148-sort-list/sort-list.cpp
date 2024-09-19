@@ -100,17 +100,11 @@ public:
             p2 = p2->next->next;
         }
         
-        ListNode* a = head;
-        ListNode* b = p1->next;
+        ListNode* p3 = p1->next;
 
         p1->next = nullptr;
 
-        ListNode* c = fn(a);
-        ListNode* d = fn(b);
-
-        ListNode* ans = mergesort(c,d);
-
-        return ans;
+        return mergesort(fn(head),fn(p3));
     }
 
     ListNode* sortList(ListNode* head) {
