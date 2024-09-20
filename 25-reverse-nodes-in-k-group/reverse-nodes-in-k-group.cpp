@@ -1,44 +1,100 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
 public:
-    // Function to reverse a part of the linked list
-    ListNode* reverseLinkedList(ListNode* head, int k) {
-        ListNode* prev = nullptr;
-        ListNode* curr = head;
-        ListNode* next = nullptr;
-
-        while (k > 0) {
-            next = curr->next; // Store next node
-            curr->next = prev; // Reverse current node's pointer
-            prev = curr;       // Move prev to current node
-            curr = next;       // Move curr to next node
-            k--;
+    void fn(ListNode* node, ListNode** newHead)
+    {
+        if (node == nullptr || node->next == nullptr)
+        {
+            *newHead = node;
+            return;
         }
 
-        return prev; // Return the new head of the reversed list
+        ListNode* nextNode = node->next;
+        fn(nextNode, newHead);
+        nextNode->next = node;
+        node->next = nullptr;
     }
+
+
+    /*
+    fn(1,1)  
+        fn(2,1)
+            fn(3,1) 
+                fn(4,1) 
+                    fn(5,1) head = 5 
+    
+    
+    */
 
     ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* curr = head;
-        int count = 0;
+        
+        ListNode* mover = head;
 
-        // First, check if there are at least k nodes remaining in the list
-        while (curr != nullptr && count < k) {
-            curr = curr->next;
-            count++;
+        int counter = 0;
+        ListNode* b = nullptr;
+        ListNode* a = nullptr;
+        ListNode* d = nullptr;
+
+        ListNode* anshead = nullptr;
+
+        while(mover != nullptr)
+        {
+            counter++;
+
+            cout << "counter: " << counter << endl;
+
+            if(counter == 1) b = mover;
+
+            if(counter == k)
+            {
+                d = mover->next;
+                mover->next = nullptr;
+
+                ListNode* c = nullptr;
+
+                fn(b, &c);
+
+                // if(prevhead != nullptr) cout << "prevhead: " << prevhead->val << '\n';
+                // else cout << "prev head: NULL" << '\n';
+
+                // if(temphead != nullptr) cout << "temphead: " << temphead->val << '\n';
+                // else cout << "temp head: NULL" << '\n';
+
+                // cout << "rv head: " << rvhead->val << endl;
+
+                // if(nxthead != nullptr) cout << "nxthead: " << nxthead->val << '\n';
+                // else cout << "nxt head: NULL" << '\n';
+ 
+                if(anshead == nullptr) anshead = c;                
+
+                if(a != nullptr) a->next = c;
+
+                b->next = d;
+
+                counter = 0;
+                a = b;
+                mover = d;
+            }
+            else
+            {
+                mover = mover->next;
+            }
         }
 
-        // If we have k nodes, we proceed with reversal
-        if (count == k) {
-            // Reverse the first k nodes
-            ListNode* reversedHead = reverseLinkedList(head, k);
-
-            // Now `head` is the last node of the reversed group, connect it to the result of the next recursive call
-            head->next = reverseKGroup(curr, k);
-
-            return reversedHead; // Return the new head of the reversed list
+        if(counter > 0 && a != nullptr)
+        {
+            a->next = b;
         }
 
-        // If there are fewer than k nodes left, don't reverse them
-        return head;
-    }
+        return anshead != nullptr ? anshead : head;
+    }   
 };
