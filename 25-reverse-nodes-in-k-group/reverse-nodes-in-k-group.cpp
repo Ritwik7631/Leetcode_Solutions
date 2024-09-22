@@ -10,71 +10,86 @@
  */
 class Solution {
 public:
-    void fn(ListNode* curr, ListNode*& ans)
-    {
-        if(curr == nullptr || curr->next == nullptr)
+    void fn(ListNode* curr, ListNode** ans)
+    {  
+        if(curr->next == nullptr)
         {
-            ans = curr;
+            *ans = curr;
+            // cout << "base condition: " << curr->val << endl;
             return;
         }
 
-        ListNode* nxt = curr->next;
-        fn(nxt, ans);
-        nxt->next = curr;
-        curr->next = nullptr;
+        fn(curr->next, ans);
+
+        curr->next->next = curr;  
     }
 
+    /*
+    fn(1,1)  
+        fn(2,1)
+            fn(3,1) 
+                fn(4,1) 
+                    fn(5,1) head = 5 
+    
+    
+    */
+
     ListNode* reverseKGroup(ListNode* head, int k) {
-
-        ListNode* a = nullptr;
-        ListNode* b = nullptr;
-        ListNode* d = nullptr;
-
+        
         ListNode* mover = head;
-        ListNode* ans = nullptr;
+
         int counter = 0;
+        ListNode* temphead = nullptr;
+        ListNode* prevhead = nullptr;
+        ListNode* nxthead = nullptr;
+
+        ListNode* anshead = nullptr;
 
         while(mover != nullptr)
         {
             counter++;
 
-            if(counter == 1) b = mover;
+            // cout << "counter: " << counter << endl;
+
+            if(counter == 1) temphead = mover;
 
             if(counter == k)
             {
-                d = mover->next;
+                nxthead = mover->next;
+                mover->next = nullptr;
 
-                mover->next = nullptr; // remember to update mover
+                ListNode* rvhead = nullptr;
 
-                ListNode* c = nullptr;
-    
-                fn(b, c);
+                fn(temphead, &rvhead);
 
-                if (ans == nullptr) {
-                    ans = c;
-                }
+                // if(prevhead != nullptr) cout << "prevhead: " << prevhead->val << '\n';
+                // else cout << "prev head: NULL" << '\n';
 
-                if(a != nullptr) a->next = c;
+                // if(temphead != nullptr) cout << "temphead: " << temphead->val << '\n';
+                // else cout << "temp head: NULL" << '\n';
 
-                b->next = d;
+                // cout << "rv head: " << rvhead->val << endl;
+
+                // if(nxthead != nullptr) cout << "nxthead: " << nxthead->val << '\n';
+                // else cout << "nxt head: NULL" << '\n';
+ 
+                if(anshead == nullptr) anshead = rvhead;                
+
+                if(prevhead != nullptr) prevhead->next = rvhead;
+
+                temphead->next = nxthead;
 
                 counter = 0;
-                a = b;
-                mover = d;
+                prevhead = temphead;
+                mover = nxthead;
             }
             else
             {
                 mover = mover->next;
-            } 
+            }
         }
 
-        if (counter > 0 && a != nullptr) {
-            a->next = b; // `b` is the start of the remaining nodes
-        }
+        return anshead;
 
-        return ans;
-
-
-
-    }
+    }   
 };
