@@ -9,25 +9,11 @@ public:
         {
             if(vis[a] == 0)
             {
-                if(path_vis[a] == 1)
-                {
-                    continue;
-                }
-                else
-                {
-                    flag = flag || DFS(a, vis, path_vis, adj);
-                }
+                if(DFS(a, vis, path_vis, adj)) return true;
             }
-            else
+            else if(vis[a] != 0 && path_vis[a] == 1)
             {
-                if(path_vis[a] == 1)
-                {
-                    return true;
-                }
-                else
-                {
-                    continue;
-                }
+                return true;
             }
         }
 
