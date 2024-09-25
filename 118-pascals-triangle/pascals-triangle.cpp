@@ -45,13 +45,13 @@ public:
 
     if(n == 2) return ans;
 
-    for(int i = 3; i <= n; i++)
+    for(int i = 2; i < n; i++)
     {
         vector<int> temp;
         temp.push_back(1);
-        for(int j = 1; j < ans[i-2].size(); j++)
+        for(int j = 1; j < ans[i-1].size(); j++)
         {
-            temp.push_back(ans[i-2][j] + ans[i-2][j-1]);
+            temp.push_back(ans[i-1][j] + ans[i-1][j-1]);
         }
         temp.push_back(1);
         ans.push_back(temp);
