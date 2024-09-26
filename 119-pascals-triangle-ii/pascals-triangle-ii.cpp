@@ -1,32 +1,32 @@
 class Solution {
 public:
-    long long NCR(int n, int r)
+    void NCR(int n, vector<int> &temp)
     {
         int a = n;
         int b = 1;
 
         long long ans = 1;
+        temp.push_back(1);
 
-        while(b <= r)
+        while(b <= n)
         {
             ans *= a;
 
             ans /= b;
 
+            temp.push_back(ans);
+
             a--;
             b++;
         }
 
-        return ans;
+        return;
     }
 
     vector<int> getRow(int n) {
         vector<int> temp;
 
-        for(int c = 0; c <= n; c++)
-        {
-            temp.push_back(NCR(n, c));
-        }
+        NCR(n, temp);
 
         return temp;
     }
