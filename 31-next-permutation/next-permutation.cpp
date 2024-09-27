@@ -16,7 +16,9 @@ public:
             return;
         }
 
-        sort(nums.begin() + i, nums.end());
+        // sort(nums.begin() + i, nums.end()); // THIS IS NOT ALLOWED
+
+        reverse(nums.begin() + i, nums.end());
 
         for(int k = i; k < n; k++)
         {
@@ -30,6 +32,8 @@ public:
         }
 
         return;
+
+
 
 
     }
