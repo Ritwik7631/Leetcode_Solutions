@@ -2,39 +2,33 @@ class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
         int n = nums.size();
+        unordered_set<int> st;
 
-        if(n == 0) return 0;
+        for(auto a : nums) st.insert(a);
 
-        if(n == 1) return 1;
+        int longest = 0;
 
-        sort(nums.begin(), nums.end());
+        int count = 0;
 
-        set<int> st = {nums.begin(), nums.end()};
-
-        nums = {st.begin(), st.end()};
-
-        n = nums.size();
-
-        int count = 1;
-        int ans = 1;
-
-        for(int i = 1; i < n; i++)
+        for(int i = 0; i < n; i++)
         {
-            // cout << "nums[i]: " << nums[i] << endl;
-            // cout << "nums[i-1]: " << nums[i-1] << endl;
-            // cout << "count: " << count << endl;
-            if(nums[i] - nums[i-1] == 1)
+            if(st.count(nums[i]-1) == 1)
+            {
+                continue;
+            }
+            count = 1;
+
+            int x = nums[i];
+
+            while(st.count(x+1))
             {
                 count++;
-                ans = max(ans, count);
+                x++;
+                
             }
-            else
-            {
-                count = 1;
-            }
+            longest = max(longest, count);
         }
 
-        return ans;
-
+        return longest;
     }
 };
