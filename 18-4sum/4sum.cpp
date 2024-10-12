@@ -1,45 +1,41 @@
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        int n = nums.size();
-
         vector<vector<int>> ans;
+        int n = nums.size();
 
         sort(nums.begin(), nums.end());
 
-        // [-2, -1, 0, 0, 1, 2]
-
-        for(int i = 0; i < n; i++)
+        for(int a = 0; a < n; a++)
         {
-            if(i > 0 && nums[i] == nums[i-1]) continue;
-
-            for(int j = i+1; j < n; j++)
+            if(a > 0 && nums[a] == nums[a-1]) continue;
+            for(int b = a + 1; b < n; b++)
             {
-                if(j > i+1 && nums[j] == nums[j-1]) continue;
+                if(b > a+1 && nums[b] == nums[b-1]) continue;
 
-                int k = j + 1;
-                int l = n-1;
+                int c = b+1;
+                int d = n-1;
 
-                while(k < l)
+                while(c < d)
                 {
-                    long long sum = (long long)nums[i] + (long long)nums[j] + (long long)nums[k] + (long long)nums[l];
+                    long long sum = (long long)nums[a] + (long long)nums[b] + (long long)nums[c] + (long long)nums[d];
 
                     if(sum == target)
                     {
-                        vector<int> temp = {nums[i],nums[j],nums[k],nums[l]};
+                        vector<int> temp = {nums[a], nums[b], nums[c], nums[d]};
                         ans.push_back(temp);
-                        k++;
-                        l--;
-                        while(k < l && nums[k] == nums[k-1]) k++;
-                        while(k < l && nums[l] == nums[l+1]) l--;
+                        c++;
+                        d--;
+                        while(c < d && nums[c] == nums[c-1]) c++;
+                        while(c < d && nums[d] == nums[d+1]) d--;
                     }
                     else if(sum < target)
                     {
-                        k++;
+                        c++;
                     }
                     else
                     {
-                        l--;
+                        d--;
                     }
                 }
             }
