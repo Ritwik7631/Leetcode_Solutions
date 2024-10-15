@@ -2,62 +2,59 @@
 
 using namespace std;
 
-const int MOD = 1e9 + 7;
-
 class Solution {
 public:
-    // Function to precompute Stirling numbers
-    vector<vector<long long>> precompute_stirling(int n_max) {
-        vector<vector<long long>> stirling(n_max + 1, vector<long long>(n_max + 1, 0));
-        stirling[0][0] = 1;  // Base case
-        
-        for (int n = 1; n <= n_max; n++) {
-            for (int k = 1; k <= n; k++) {
-                stirling[n][k] = (stirling[n-1][k-1] + (k * stirling[n-1][k]) % MOD) % MOD;
+    const int mod = 1e9 + 7;  
+
+    vector<vector<int>> fn_sterling(int n) {
+        vector<vector<int>> sterling(n + 1, vector<int>(n + 1, 0));
+        sterling[0][0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            for (int k = 1; k <= i; k++) {
+                sterling[i][k] = (sterling[i - 1][k - 1] + (1LL * k * sterling[i - 1][k]) % mod) % mod;
             }
         }
-        
-        return stirling;
+
+        return sterling;
     }
 
-    // Function to compute permutations P(x, k)
-    long long permutations(int x, int k) {
+    int permutations(int n, int k) {
         long long result = 1;
-        for (int i = 0; i < k; i++) {
-            result = (result * (x - i)) % MOD;
+        for (int i = n - k + 1; i <= n; i++) {
+            result = (result * i) % mod;
         }
         return result;
     }
 
-    // Function to compute y^k mod (MOD) using binary exponentiation
-    long long mod_pow(int y, int k) {
+    int power(int y, int k) {
         long long result = 1;
         long long base = y;
 
         while (k > 0) {
             if (k % 2 == 1) {
-                result = (result * base) % MOD;
+                result = (result * base) % mod;
             }
-            base = (base * base) % MOD;
+            base = (base * base) % mod;
             k /= 2;
         }
         return result;
     }
 
-    // Main function to calculate the number of ways for the event
     int numberOfWays(int n, int x, int y) {
-        vector<vector<long long>> stirling = precompute_stirling(1000);
-        
-        long long result = 0;
+        long long count = 0;
+
+        vector<vector<int>> sterling_arr = fn_sterling(1000);
+
         for (int k = 1; k <= min(n, x); k++) {
-            long long stage_perm = permutations(x, k);        // P(x, k)
-            long long stirling_val = stirling[n][k];          // S(n, k)
-            long long score_power = mod_pow(y, k);            // y^k
-            
-            // Add up the result for each k
-            result = (result + stage_perm * stirling_val % MOD * score_power % MOD) % MOD;
+            long long perm = permutations(x, k);  
+            long long points = power(y, k);       
+            long long sterling = sterling_arr[n][k];  
+
+            // Sum up the result and apply modulo at every step
+            count = (count + perm * points % mod * sterling % mod) % mod;
         }
-        
-        return static_cast<int>(result);  // Return result as int, modulo applied
+
+        return count;
     }
 };
