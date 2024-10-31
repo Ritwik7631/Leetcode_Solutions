@@ -4,23 +4,26 @@ public:
 
         int n = nums.size();
 
-        set<int> st;
+        sort(nums.begin(), nums.end());
 
-        for(auto a : nums)
+        int i = 1;
+        int j = 1;
+
+        while(i < n)
         {
-            st.insert(a);
+            while(i < n && nums[i] == nums[i-1])
+            {
+                i++;
+            }
+
+            if(i < n)
+            {
+                nums[j] = nums[i];
+                j++;
+                i++;
+            }
         }
 
-        int i = 0;
-
-        for(auto a : st)
-        {
-            nums[i] = a;
-            i++;
-        }
-
-        int m = st.size();
-
-        return m;
+        return j;
     }
 };
