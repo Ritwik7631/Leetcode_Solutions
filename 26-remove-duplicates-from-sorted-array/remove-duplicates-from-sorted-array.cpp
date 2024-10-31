@@ -4,8 +4,6 @@ public:
 
         int n = nums.size();
 
-        sort(nums.begin(), nums.end());
-
         int i = 1;
         int j = 1;
 
