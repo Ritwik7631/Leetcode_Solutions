@@ -4,28 +4,22 @@ public:
 
         int n = nums.size();
 
-        unordered_map<int, int> mp;
+        set<int> st;
 
         for(auto a : nums)
         {
-            mp[a]++;
+            st.insert(a);
         }
 
-        nums.clear();
+        int i = 0;
 
-        for(auto a : mp)
+        for(auto a : st)
         {
-            nums.push_back(a.first);
+            nums[i] = a;
+            i++;
         }
 
-        sort(nums.begin(), nums.end());
-
-        int m = nums.size();
-
-        for(int i = 0; i < n-m; i++)
-        {
-            nums.push_back(INT_MAX);
-        }
+        int m = st.size();
 
         return m;
     }
