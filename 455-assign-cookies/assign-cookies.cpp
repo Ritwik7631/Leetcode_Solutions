@@ -13,6 +13,8 @@ public:
                 happy++;
                 j++;
             }
+
+            if(j == g.size()) break;
         }
 
         return happy;
