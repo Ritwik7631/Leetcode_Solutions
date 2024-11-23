@@ -6,7 +6,8 @@ public:
         sort(g.begin(), g.end());
         sort(s.begin(), s.end());
         int j = 0;
-        for(int i = 0; i < s.size(); i++)
+        int n = s.size();
+        for(int i = 0; i < n; i++)
         {
             if(j < g.size() && s[i] >= g[j])
             {
