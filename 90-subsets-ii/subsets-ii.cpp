@@ -15,18 +15,19 @@ public:
     }
 
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
         vector<int> temp;
         fn(0, nums, temp);
 
-        set<vector<int>> arr;
+        // set<vector<int>> arr;
 
-        for(auto a : st)
-        {
-            sort(a.begin(), a.end());
-            arr.insert(a);
-        }
+        // for(auto a : st)
+        // {
+        //     sort(a.begin(), a.end());
+        //     arr.insert(a);
+        // }
 
-        vector<vector<int>> ans(arr.begin(), arr.end());
+        vector<vector<int>> ans(st.begin(), st.end());
 
         ans.push_back({});
         
