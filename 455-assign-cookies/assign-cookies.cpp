@@ -7,15 +7,16 @@ public:
         sort(s.begin(), s.end());
         int j = 0;
         int n = s.size();
+        int m = g.size();
         for(int i = 0; i < n; i++)
         {
-            if(j < g.size() && s[i] >= g[j])
+            if(j < m && s[i] >= g[j])
             {
                 happy++;
                 j++;
             }
 
-            if(j == g.size()) break;
+            if(j == m) break;
         }
 
         return happy;
