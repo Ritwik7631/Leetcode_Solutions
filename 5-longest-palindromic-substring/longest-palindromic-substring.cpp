@@ -23,7 +23,7 @@ public:
 
             // cout << mirrored_position << endl;
 
-            radius_centered_at_i[i] = min(r-i, radius_centered_at_i[l+r-i]);
+            radius_centered_at_i[i] = max(0, min(r-i, radius_centered_at_i[l+r-i]));
             
             while(i + radius_centered_at_i[i] + 1 < n &&
                   i - radius_centered_at_i[i] - 1 >= 0 &&
