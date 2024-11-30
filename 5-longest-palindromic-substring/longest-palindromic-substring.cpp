@@ -18,7 +18,7 @@ public:
         int n = modified.size();
         for(int i = 1; i < n; i++)
         {
-            cout << "l: " << l << " r: " << r << " i:" << i << endl;
+            // cout << "l: " << l << " r: " << r << " i:" << i << endl;
             int mirrored_position = l + r - i;
 
             // cout << mirrored_position << endl;
