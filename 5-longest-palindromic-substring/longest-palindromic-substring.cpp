@@ -34,10 +34,7 @@ public:
                     radius[i] = dist_to_edge_from_i;
                 }
             }
-            else
-            {
-                radius[i] = 0;
-            }
+
 
             while(i + radius[i] + 1 < n && i - radius[i] - 1 && modified[i + radius[i] + 1] == modified[i - radius[i] - 1])
             {
