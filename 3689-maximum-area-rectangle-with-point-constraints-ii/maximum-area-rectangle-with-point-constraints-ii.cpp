@@ -1,104 +1,90 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Interval {
-    int y1, y2, px;
-    bool operator<(const Interval &other) const {
-        // Sort primarily by y1, then by y2, then by px
-        if (y1 != other.y1) return y1 < other.y1;
-        if (y2 != other.y2) return y2 < other.y2;
-        return px < other.px;
-    }
-};
-
 class Solution {
 public:
     long long maxRectangleArea(vector<int>& xCoord, vector<int>& yCoord) {
-        // INF large enough for no overlap
-        const long long INF = 100000000000000000LL;
+        // Define the tuple as (y1, y2, px)
+        // This ordering ensures that the set sorts primarily by y1, then y2, then px
+        set<tuple<int, int, int>> sl;
+        long long max_area = -1;
 
-        int n = (int)xCoord.size();
-        // points[x] = vector of all y at this x
+        int n = xCoord.size();
+        // Map to store y-coordinates for each x-coordinate
         map<int, vector<int>> points;
         for (int i = 0; i < n; i++) {
             points[xCoord[i]].push_back(yCoord[i]);
         }
+        // Sort the y-coordinates for each x-coordinate
         for (auto &kv : points) {
             sort(kv.second.begin(), kv.second.end());
         }
 
-        // sl will store intervals (y1,y2,px)
-        // px is the x where the interval was added
-        set<Interval> sl;
-        long long max_area = -1;
-
+        // Extract and sort all unique x-coordinates
         vector<int> xs;
         for (auto &kv : points) xs.push_back(kv.first);
         sort(xs.begin(), xs.end());
 
         for (auto x : xs) {
-            // Remove invalid intervals
-            // We'll store intervals to remove
-            vector<Interval> toRemove;
-
-            // Check for rectangles using existing intervals
-            // For each pair (y1, y2) in points[x], try to find a matching interval in sl
+            // Current y-coordinates at this x
             auto &Y = points[x];
+            // Vector to store intervals that need to be removed
+            vector<tuple<int, int, int>> toRemove;
+
+            // Check for possible rectangles with existing intervals
             for (int i = 0; i + 1 < (int)Y.size(); i++) {
                 int y1 = Y[i], y2 = Y[i+1];
-
-                // Try to find (y1,y2) in sl
-                // We do a lower_bound with something that will position us around (y1,y2)
-                Interval query{y1, y2, (int)-INF};
+                // Create a query tuple with px as INT32_MIN to find the lower bound
+                tuple<int, int, int> query = make_tuple(y1, y2, INT32_MIN);
                 auto it = sl.lower_bound(query);
-                // Check it and it-1 for a match
-                if (it != sl.end() && it->y1 == y1 && it->y2 == y2) {
-                    // Found exact interval
-                    long long px = it->px;
-                    long long area = (long long)(y2 - y1)*(x - px);
-                    if (area > max_area) max_area = area;
-                } else if (it != sl.begin()) {
+                // Check if the current (y1, y2) exists in the set
+                if (it != sl.end() && get<0>(*it) == y1 && get<1>(*it) == y2) {
+                    // Found an exact interval
+                    long long px = get<2>(*it);
+                    long long area = (long long)(y2 - y1) * (x - px);
+                    max_area = max(max_area, area);
+                } 
+                // Also check the previous iterator in case of multiple intervals with same y1 and y2
+                else if (it != sl.begin()) {
                     auto prevIt = prev(it);
-                    if (prevIt->y1 == y1 && prevIt->y2 == y2) {
-                        long long px = prevIt->px;
-                        long long area = (long long)(y2 - y1)*(x - px);
-                        if (area > max_area) max_area = area;
+                    if (get<0>(*prevIt) == y1 && get<1>(*prevIt) == y2) {
+                        long long px = get<2>(*prevIt);
+                        long long area = (long long)(y2 - y1) * (x - px);
+                        max_area = max(max_area, area);
                     }
                 }
             }
 
-            // Now remove intervals invalidated by points on this line
+            // Now remove intervals invalidated by points on this x-line
             for (auto y : Y) {
-                // We want to find intervals that may contain y
-                // We'll search by (y, -1, -INF) to find position around intervals starting at or before y
-                Interval query{y, -1, (int)-INF};
+                // Define a query to find intervals that might contain y
+                // Since tuples are sorted, we can perform a lower_bound search
+                tuple<int, int, int> query = make_tuple(y, -1, INT32_MIN);
                 auto it = sl.lower_bound(query);
 
-                // Check intervals before it
-                {
-                    // Make a copy iterator for backward search
-                    auto bit = it;
-                    while (bit != sl.begin()) {
-                        auto pit = prev(bit);
-                        if (pit->y1 <= y && pit->y2 >= y) {
-                            toRemove.push_back(*pit);
-                            bit = pit;
+                // Check intervals before 'it'
+                if (it != sl.begin()) {
+                    auto bit = prev(it);
+                    while (true) {
+                        if (get<0>(*bit) <= y && get<1>(*bit) >= y) {
+                            toRemove.push_back(*bit);
                             if (bit == sl.begin()) break;
+                            bit = prev(bit);
                         } else {
                             break;
                         }
                     }
                 }
 
-                // Check the interval at it if any
+                // Check the interval at 'it' if it exists
                 if (it != sl.end()) {
-                    if (it->y1 <= y && it->y2 >= y) {
+                    if (get<0>(*it) <= y && get<1>(*it) >= y) {
                         toRemove.push_back(*it);
                     }
                 }
             }
 
-            // Remove all invalid intervals
+            // Remove all invalidated intervals
             for (auto &rem : toRemove) {
                 sl.erase(rem);
             }
@@ -106,7 +92,7 @@ public:
             // Add new intervals from this line
             for (int i = 0; i + 1 < (int)Y.size(); i++) {
                 int y1 = Y[i], y2 = Y[i+1];
-                sl.insert({y1, y2, x});
+                sl.emplace(y1, y2, x);
             }
         }
 
