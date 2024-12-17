@@ -126,8 +126,6 @@ public:
             }
         }
 
-        // if(mx2[initialCurrency] == 0) return 1.0;
-
         return max(mx2[initialCurrency], 1.0);
     }
 };
