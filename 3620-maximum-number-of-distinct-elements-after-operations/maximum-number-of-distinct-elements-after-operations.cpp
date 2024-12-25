@@ -17,12 +17,13 @@ public:
             int a = num-k;
             int b = num+k;
             int actual_a, actual_b;
+            actual_a = max(next, a);
+            // if(next >= a && next <= b) actual_a = next;
+            // else actual_a = a;
 
-            if(next >= a && next <= b) actual_a = next;
-            else actual_a = a;
-
-            if(actual_a+freq-1 > b) actual_b = b;
-            else actual_b = actual_a + freq - 1;
+            actual_b = min(actual_a + freq - 1, b);
+            // if(actual_a+freq-1 > b) actual_b = b;
+            // else actual_b = actual_a + freq - 1;
 
             next = actual_b + 1;
 
