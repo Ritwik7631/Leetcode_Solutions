@@ -18,7 +18,7 @@ public:
             prev_last_seen = -1;
         }
         
-        while(start <= prev_last_seen)
+        while(prev_last_seen >= start && prev_last_seen <= end)
         {
             pathSum -= path[start];
             start++;
