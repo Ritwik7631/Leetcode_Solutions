@@ -4,12 +4,10 @@ public:
     {
         long long ans = 1;
 
-        int j = 1;
-        for(int i = n; i >= n-r+1; i--)
+        for(int i = 1; i <= r; i++)
         {
-            ans *= i;
-            ans /= j;
-            j++;
+            ans *= (n-i+1);
+            ans /= i;
         }
 
         return ans;
