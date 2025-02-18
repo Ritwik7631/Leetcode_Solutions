@@ -23,14 +23,14 @@ public:
 
         vector<int> ans;
 
-        for(int j = x-1; j >= 0 && k > 0; j--)
+        for(int j = x-1; j >= 0; j--)
         {
             if(bucket[j].size() == 0) continue;
 
-            for(int q = 0; q < bucket[j].size() && k > 0; q++)
+            for(int q = 0; q < bucket[j].size(); q++)
             {
                 ans.push_back(bucket[j][q]);
-                k--;
+                if(ans.size() == k) return ans;
             }
         }
 
