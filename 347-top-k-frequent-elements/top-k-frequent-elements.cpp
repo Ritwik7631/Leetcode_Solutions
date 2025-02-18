@@ -27,9 +27,9 @@ public:
         {
             if(bucket[j].size() == 0) continue;
 
-            for(int q = 0; q < bucket[j].size(); q++)
+            for(auto a : bucket[j])
             {
-                ans.push_back(bucket[j][q]);
+                ans.push_back(a);
                 if(ans.size() == k) return ans;
             }
         }
