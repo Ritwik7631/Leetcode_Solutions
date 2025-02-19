@@ -41,8 +41,8 @@ public:
             }
         }
 
-        cout << "square check" << endl;
-        int count = 0;
+        // cout << "square check" << endl;
+        // int count = 0;
 
         for(int i = 0; i < n; i = i + 3)
         {
@@ -54,7 +54,7 @@ public:
                 int y = j;
                 int x = i;
 
-                count++;
+                // count++;
 
                 set<int> st;
 
@@ -76,13 +76,13 @@ public:
             }
         }
 
-        cout << "count: " << count << endl;
+        // cout << "count: " << count << endl;
 
-        for(auto a : board)
-        {
-            for(auto b : a) cout << b << " ";
-            cout << endl;
-        }
+        // for(auto a : board)
+        // {
+        //     for(auto b : a) cout << b << " ";
+        //     cout << endl;
+        // }
 
         return true;
 
