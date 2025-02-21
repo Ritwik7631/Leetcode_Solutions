@@ -33,11 +33,8 @@ public:
                 a++;
             }
 
-            if(s1freq[s2[b] - 'a'] > 0)
-            {
-                s2freq[s2[b] - 'a']++;
-            }
-
+            s2freq[s2[b] - 'a']++;
+            
             if(s1freq == s2freq) return true;
         }
 
