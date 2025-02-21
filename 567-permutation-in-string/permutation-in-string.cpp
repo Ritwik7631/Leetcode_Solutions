@@ -22,8 +22,8 @@ public:
         {
             if(s1freq[s2[b] - 'a'] == 0)
             {
-                s2freq = vector<int>(26,0);
-                a = b + 1;
+                s2freq = vector<int>(26,0); // we reset because s2freq has to be an exact permutation of s1freq and if s2[b] is not in s1 then we reset
+                a = b+1;
                 continue;
             }
 
