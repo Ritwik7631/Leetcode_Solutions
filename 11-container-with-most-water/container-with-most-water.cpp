@@ -27,6 +27,7 @@ public:
             else
             {
                 l++;
+                r--;
             }
         }
 
