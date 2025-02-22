@@ -12,9 +12,8 @@ public:
             c++;
             
             while (c == k) {
-                ans.push_back(*mxs.rbegin());  // add the maximum element in current window
-                // Remove the element that is sliding out (not necessarily the maximum)
-                mxs.erase(mxs.find(nums[a]));
+                ans.push_back(*mxs.rbegin());
+                mxs.erase(mxs.find(nums[a])); // only deleting one instance of nums[a] NOT ALL
                 a++;
                 c--;
             }
