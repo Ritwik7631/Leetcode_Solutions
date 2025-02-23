@@ -39,7 +39,6 @@ public:
     }
 
     vector<string> generateParenthesis(int n) {
-        ans.clear();
         fn(n,n, "");
 
         return ans;
