@@ -16,19 +16,16 @@ public:
     void reorderList(ListNode* head) {
         if (!head || !head->next) return;
         
-        // Adjusted while loop condition.
         ListNode* slow = head;
         ListNode* fast = head;
-        while (fast->next != nullptr && fast->next->next != nullptr) {
+        while (slow != nullptr && slow->next != nullptr && fast != nullptr && fast->next != nullptr && fast->next->next != nullptr) {
             slow = slow->next;
             fast = fast->next->next;
         }
         
-        // Split the list into two halves.
         ListNode* second = slow->next;
         slow->next = nullptr;
         
-        // Reverse the second half.
         fn(second);
         ListNode* rvhead = ans;
         
