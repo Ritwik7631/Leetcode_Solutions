@@ -17,53 +17,33 @@ public:
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
+        unordered_map<Node*, Node*> oldtonew;
+
+        // oldtonew[NULL] = NULL;
+
         Node* mover = head;
 
-        Node* headans = nullptr;
-
         while(mover != nullptr)
         {
-            Node* curr = new Node(mover->val);
-            curr->next = mover->next;
-            mover->next = curr;
+            Node* n = new Node(mover->val);
+            n->next = mover->next;
+            n->random = mover->random;
 
-            if(headans == nullptr) headans = curr;
+            oldtonew[mover] = n;
 
-            mover = curr->next;
-        }
-
-        // Node* tempmover = head;
-
-        // while(tempmover != nullptr)
-        // {
-        //     cout << tempmover->val << " ";
-        //     tempmover = tempmover->next;
-        // }
-
-        // original->next->random = original->random->next
-
-        mover = head;
-
-        while(mover != nullptr)
-        {
-            if(mover->random != nullptr) mover->next->random = mover->random->next;
-            mover = mover->next->next;
+            mover = mover->next; 
         }
 
         mover = head;
-        Node* mover2 = headans;
 
         while(mover != nullptr)
         {
-            if(mover->next != nullptr) mover->next = mover->next->next;
-
-            if(mover2->next != nullptr) mover2->next = mover2->next->next;
-
+            Node* copy = oldtonew[mover];
+            copy->next = oldtonew[mover->next];
+            copy->random = oldtonew[mover->random];
             mover = mover->next;
-
-            mover2 = mover2->next;
         }
 
-        return headans;
+        return oldtonew[head];
     }
 };
