@@ -11,33 +11,32 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* temp1 = l1;
-        ListNode* temp2 = l2;
+        ListNode* anshead = new ListNode(0);
+        ListNode* finalans = anshead;
 
-        int carryover = 0;
+        ListNode* mover1 = l1;
+        ListNode* mover2 = l2;
+        
+        int carry = 0;
 
-        ListNode* ans = NULL;
-        ListNode* temp = ans;
+        while(mover1 != nullptr || mover2 != nullptr || carry != 0)
+        {   
+            int a = 0, b = 0;
+            if(mover1 != nullptr) a = mover1->val;
+            if(mover2 != nullptr) b = mover2->val;
 
-        while(temp1 != NULL || temp2 != NULL || carryover != 0)
-        {
-            ListNode* current = new ListNode();
-            int cur = 0;
-            if(temp1 != NULL) cur += temp1->val;
-            if(temp2 != NULL) cur += temp2->val;
-            cur += carryover;
-            carryover = 0;
-            current->val = cur%10;
-            carryover = cur/10;
+            int total = (carry + a + b);
+            carry = total / 10;
 
-            if(temp != NULL) temp->next = current;
-            else ans = current;
-            temp = current;
+            ListNode* curr = new ListNode(total % 10);
+            anshead->next = curr;
 
-            if(temp1 != NULL) temp1 = temp1->next;
-            if(temp2 != NULL) temp2 = temp2->next;
+            anshead = anshead->next;
+
+            if(mover1 != nullptr) mover1 = mover1->next;
+            if(mover2 != nullptr) mover2 = mover2->next;
         }
 
-        return ans;
+        return finalans->next;
     }
 };
