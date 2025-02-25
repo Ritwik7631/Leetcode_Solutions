@@ -10,86 +10,59 @@
  */
 class Solution {
 public:
-    void fn(ListNode* curr, ListNode** ans)
-    {  
-        if(curr->next == nullptr)
+    void rv(ListNode* a, ListNode* b)
+    {
+        if(a->next == b)
         {
-            *ans = curr;
-            // cout << "base condition: " << curr->val << endl;
+            b->next = a;
+            a->next = nullptr;
             return;
         }
-
-        fn(curr->next, ans);
-
-        curr->next->next = curr;  
+        rv(a->next, b);
+        a->next->next = a;
     }
 
-    /*
-    fn(1,1)  
-        fn(2,1)
-            fn(3,1) 
-                fn(4,1) 
-                    fn(5,1) head = 5 
-    
-    
-    */
-
     ListNode* reverseKGroup(ListNode* head, int k) {
+        if (!head || k <= 1) return head;
+        
+        ListNode* anshead = nullptr;
+        ListNode* prevTail = nullptr;  // To connect previous reversed group
         
         ListNode* mover = head;
-
-        int counter = 0;
-        ListNode* temphead = nullptr;
-        ListNode* prevhead = nullptr;
-        ListNode* nxthead = nullptr;
-
-        ListNode* anshead = nullptr;
-
+        int c = -1;
+        ListNode* start = nullptr;
+        ListNode* end = nullptr;
+        int s = 0;
+        int e = k - 1;
+        
         while(mover != nullptr)
         {
-            counter++;
-
-            // cout << "counter: " << counter << endl;
-
-            if(counter == 1) temphead = mover;
-
-            if(counter == k)
+            c++;
+            if(c % k == s)
+                start = mover;
+            if(c % k == e)
             {
-                nxthead = mover->next;
-                mover->next = nullptr;
-
-                ListNode* rvhead = nullptr;
-
-                fn(temphead, &rvhead);
-
-                // if(prevhead != nullptr) cout << "prevhead: " << prevhead->val << '\n';
-                // else cout << "prev head: NULL" << '\n';
-
-                // if(temphead != nullptr) cout << "temphead: " << temphead->val << '\n';
-                // else cout << "temp head: NULL" << '\n';
-
-                // cout << "rv head: " << rvhead->val << endl;
-
-                // if(nxthead != nullptr) cout << "nxthead: " << nxthead->val << '\n';
-                // else cout << "nxt head: NULL" << '\n';
- 
-                if(anshead == nullptr) anshead = rvhead;                
-
-                if(prevhead != nullptr) prevhead->next = rvhead;
-
-                temphead->next = nxthead;
-
-                counter = 0;
-                prevhead = temphead;
-                mover = nxthead;
+                end = mover;
+                ListNode* nxt = mover->next;
+                
+                rv(start, end);      // Reverse current group
+                start->next = nxt;   // Connect reversed group tail to next part
+                
+                if(prevTail != nullptr)
+                    prevTail->next = end;  // Connect previous group to current group
+                else
+                    anshead = end;         // First reversed group becomes the new head
+                
+                prevTail = start;          // Update previous tail for next reversal
+                
+                // Jump mover ahead to the next group's start and reset counter
+                mover = nxt;
+                c = -1;  // reset counter for the new group
+                continue;  // skip the mover = mover->next below
             }
-            else
-            {
-                mover = mover->next;
-            }
+            mover = mover->next; // Advance pointer normally if group not complete
         }
-
-        return anshead;
-
-    }   
+        
+        return anshead ? anshead : head;
+    }
 };
