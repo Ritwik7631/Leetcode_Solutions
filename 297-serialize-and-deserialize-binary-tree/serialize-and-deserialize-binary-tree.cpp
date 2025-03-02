@@ -6,25 +6,22 @@ public:
     }
     
     TreeNode* deserialize(string data) {
-        vector<string> tokens;
-        string token;
-        for (char c : data) {
-            if (c == ',') {
-                if (!token.empty()) {  // only add non-empty tokens
-                    tokens.push_back(token);
-                    token.clear();
-                }
-            } else {
-                token.push_back(c);
-            }
-        }
-
-        // In case there's any token left (shouldn't happen if data ends with a comma).
-        if (!token.empty())
+    vector<string> tokens;
+    string token;
+    for (char c : data) {
+        if (c != ',') {
+            token.push_back(c);
+        } else {
             tokens.push_back(token);
-        
-        int index = 0;
-        return buildTree(tokens, index);
+            token.clear();
+        }
+    }
+    // In case there's any token left.
+    if (!token.empty())
+        tokens.push_back(token);
+
+    int index = 0;
+    return buildTree(tokens, index);
     }
     
     TreeNode* buildTree(const vector<string>& tokens, int &index) {
