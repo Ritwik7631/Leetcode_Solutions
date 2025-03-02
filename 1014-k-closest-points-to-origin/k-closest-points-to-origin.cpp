@@ -2,8 +2,8 @@ class Solution {
 public:
     struct Closest {
         bool operator()(const pair<int,int>& a, const pair<int,int>& b) const{
-            double d1 = sqrt(a.first * a.first + a.second * a.second);
-            double d2 = sqrt(b.first * b.first + b.second * b.second);
+            double d1 = (a.first * a.first + a.second * a.second);
+            double d2 = (b.first * b.first + b.second * b.second);
             return d1 < d2;
         }
     };
