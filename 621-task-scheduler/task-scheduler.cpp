@@ -29,7 +29,7 @@ public:
             timer++;
             count++;
 
-            if(!q.empty() && q.front().second == timer)
+            if(!q.empty() && q.front().second <= timer)
             {
                 ms.insert(q.front().first);
                 q.pop();
