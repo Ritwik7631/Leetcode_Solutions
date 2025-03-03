@@ -1,38 +1,25 @@
 class Solution {
 public:
-    vector<vector<int>> fn(int i, int rem, vector<int>& nums, vector<int>& curr)
-    {
-        vector<vector<int>> ans;
-
-        if(rem == 0)
-        {
-            ans.push_back(curr);
-            return ans;
+    vector<vector<int>> res;
+    
+    void dfs(vector<int>& candidates, int target, int start, vector<int>& curr) {
+        if(target == 0) {
+            res.push_back(curr);
+            return;
         }
-
-        if(i < 0)
-        {
-            return ans;
+        
+        for(int i = start; i < candidates.size(); i++){
+            if(candidates[i] > target) break;
+            curr.push_back(candidates[i]);
+            dfs(candidates, target - candidates[i], i, curr);
+            curr.pop_back(); 
         }
-
-        if(rem - nums[i] >= 0)
-        {
-            curr.push_back(nums[i]);
-            vector<vector<int>> pick = fn(i, rem - nums[i], nums, curr);
-            curr.pop_back();
-
-            for(auto a : pick) ans.push_back(a);
-        }
-
-        vector<vector<int>> notpick = fn(i-1, rem, nums, curr);
-        for(auto a : notpick) ans.push_back(a);
-
-        return ans;
     }
-
+    
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        int n = candidates.size();
+        sort(candidates.begin(), candidates.end());
         vector<int> curr;
-        return fn(n-1, target, candidates, curr);
+        dfs(candidates, target, 0, curr);
+        return res;
     }
 };
