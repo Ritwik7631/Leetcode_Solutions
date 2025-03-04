@@ -7,15 +7,15 @@ public:
             res.push_back(curr);
             return;
         }
-
-        for(int j = i; j < candidates.size(); j++) {
-            if(j > i && candidates[j] == candidates[j - 1])
-                continue;
+        for (int j = i; j < candidates.size(); j++) {
             if(candidates[j] > rem)
                 break;
+
             curr.push_back(candidates[j]);
             dfs(j + 1, rem - candidates[j], candidates, curr);
             curr.pop_back();
+            
+            while(j+1 < candidates.size() && candidates[j] == candidates[j+1]) j++;
         }
     }
 
