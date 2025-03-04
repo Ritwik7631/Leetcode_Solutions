@@ -10,7 +10,6 @@ public:
         COLS = board[0].size();
         visited = vector<vector<bool>>(ROWS, vector<bool>(COLS, false));
 
-        // Try every cell as the starting point.
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLS; c++) {
                 if (board[r][c] == word[0]) {
@@ -28,17 +27,17 @@ public:
         if (idx == word.size())
             return true;
 
-        // Loop through the four directions.
         for (int d = 0; d < 4; d++) {
             int nr = r + rdel[d];
             int nc = c + cdel[d];
 
             if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS &&
-                !visited[nr][nc] && board[nr][nc] == word[idx]) {
+                visited[nr][nc] == false && board[nr][nc] == word[idx]) {
+
                 visited[nr][nc] = true;
-                if (dfs(board, word, nr, nc, idx + 1))
-                    return true;
-                visited[nr][nc] = false;  // backtracking
+                if (dfs(board, word, nr, nc, idx + 1)) return true;
+                visited[nr][nc] = false;  
+
             }
         }
         return false;
