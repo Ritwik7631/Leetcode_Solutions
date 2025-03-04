@@ -1,59 +1,44 @@
 class Solution {
 public:
+    int ROWS, COLS;
+    vector<vector<bool>> visited;
+    vector<int> rdel = {1, 0, -1, 0};
+    vector<int> cdel = {0, -1, 0, 1};
+
     bool exist(vector<vector<char>>& board, string word) {
-        int n = board.size();
-        int m = board[0].size();
+        ROWS = board.size();
+        COLS = board[0].size();
+        visited = vector<vector<bool>>(ROWS, vector<bool>(COLS, false));
 
-        unordered_map<char, int> boardFreq;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                boardFreq[board[i][j]]++;
-            }
-        }
-        unordered_map<char, int> wordFreq;
-        for (char c : word) {
-            wordFreq[c]++;
-        }
-        for (auto& p : wordFreq) {
-            if (boardFreq[p.first] < p.second)
-                return false;
-        }
-
-        if (boardFreq[word[0]] > boardFreq[word[word.size()-1]])
-            reverse(word.begin(), word.end());
-
-        vector<vector<bool>> visited(n, vector<bool>(m, false));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (board[i][j] == word[0]) {
-                    visited[i][j] = true;
-                    if (dfs(i, j, board, word, visited, 1))
+        // Try every cell as the starting point.
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                if (board[r][c] == word[0]) {
+                    visited[r][c] = true;
+                    if (dfs(board, word, r, c, 1))
                         return true;
-                    visited[i][j] = false;
+                    visited[r][c] = false;
                 }
             }
         }
         return false;
     }
 
-private:
-    bool dfs(int i, int j, vector<vector<char>>& board, const string &word,
-             vector<vector<bool>>& visited, int idx) {
+    bool dfs(vector<vector<char>>& board, const string &word, int r, int c, int idx) {
         if (idx == word.size())
             return true;
-        
-        // Direction vectors for down, left, up, and right.
-        vector<int> rdel{1, 0, -1, 0};
-        vector<int> cdel{0, -1, 0, 1};
-        
+
+        // Loop through the four directions.
         for (int d = 0; d < 4; d++) {
-            int nr = i + rdel[d], nc = j + cdel[d];
-            if (nr >= 0 && nr < board.size() && nc >= 0 && nc < board[0].size() &&
+            int nr = r + rdel[d];
+            int nc = c + cdel[d];
+
+            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS &&
                 !visited[nr][nc] && board[nr][nc] == word[idx]) {
                 visited[nr][nc] = true;
-                if (dfs(nr, nc, board, word, visited, idx + 1))
+                if (dfs(board, word, nr, nc, idx + 1))
                     return true;
-                visited[nr][nc] = false;  // Backtracking
+                visited[nr][nc] = false;  // backtracking
             }
         }
         return false;
