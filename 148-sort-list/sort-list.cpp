@@ -10,103 +10,52 @@
  */
 class Solution {
 public:
-    ListNode* mergesort(ListNode* a, ListNode* b)
-    {
-        ListNode* mover1 = a;
-        ListNode* mover2 = b;
-        ListNode* ans = nullptr;
-        ListNode* headans;
-
-        while(mover1 != nullptr && mover2 != nullptr)
-        {
-            if(mover1->val < mover2->val)
-            {
-                if(ans == nullptr)
-                {
-                    ans = mover1;
-                    headans = mover1;
-                }
-                else
-                {
-                    ans->next = mover1;
-                    ans = ans->next;
-                }
-
-                mover1 = mover1->next;
-            }
-            else
-            {
-                if(ans == nullptr)
-                {
-                    ans = mover2;
-                    headans = mover2;
-                }
-                else
-                {
-                    ans->next = mover2;
-                    ans = ans->next;
-                }
-
-                mover2 = mover2->next;
-                
-            }
-        }
-
-        while(mover1 != nullptr)
-        {
-            if(ans == nullptr)
-            {
-                ans = mover1;
-                headans = mover1;
-            }
-            else
-            {
-                ans->next = mover1;
-                ans = ans->next;
-            }
-
-            mover1 = mover1->next;
-        }
-
-        while(mover2 != nullptr)
-        {
-            if(ans == nullptr)
-            {
-                ans = mover2;
-                headans = mover2;
-            }
-            else
-            {
-                ans->next = mover2;
-                ans = ans->next;
-            }
-
-            mover2 = mover2->next;
-        }
-
-        return headans;
-    }
-
-    ListNode* fn(ListNode* head)
-    {
-        if(head == nullptr || head->next == nullptr) return head;
-
-        ListNode* p1 = head;
-        ListNode* p2 = head;
-
-        while(p2 != nullptr && p2->next != nullptr && p2->next->next != nullptr)
-        {
-            p1 = p1->next;
-            p2 = p2->next->next;
+    ListNode* half(ListNode* x) {
+        ListNode* slow = x;
+        ListNode* fast = x;
+        ListNode* pre = nullptr;
+        
+        while(fast != nullptr && fast->next != nullptr) {
+            pre = slow;
+            slow = slow->next;
+            fast = fast->next->next;
         }
         
-        ListNode* p3 = p1->next;
-
-        p1->next = nullptr;
-
-        return mergesort(fn(head),fn(p3));
+        return pre;
     }
-
+    
+    ListNode* fn(ListNode* a) {
+        if(a == nullptr || a->next == nullptr) return a;
+        
+        ListNode* pre = half(a);
+        ListNode* mid = pre->next;
+        pre->next = nullptr;
+        
+        ListNode* left = fn(a);
+        ListNode* right = fn(mid);
+        
+        ListNode dummy(0);
+        ListNode* tail = &dummy;
+        
+        while(left != nullptr && right != nullptr) {
+            if(left->val < right->val) {
+                tail->next = left;
+                left = left->next;
+            }
+            else {
+                tail->next = right;
+                right = right->next;
+            }
+            
+            tail = tail->next;
+        }
+        
+        if(left) tail->next = left;
+        if(right) tail->next = right;
+        
+        return dummy.next;
+    }
+    
     ListNode* sortList(ListNode* head) {
         return fn(head);
     }
