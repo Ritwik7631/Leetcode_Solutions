@@ -1,33 +1,32 @@
 class Solution {
 public:
-    double myPow(double x, int n) {
+    double fn(double x, int n)
+    {
         if(n == 0) return 1;
 
-        if(n == 1) return x;
+        double ans = 1.0;
 
-        if(x == 0) return 0;
+        double base = x;
+        int exp = n;
 
-        bool flip = n < 0;
-
-        int rem = abs(n);
-        double ans = 1;
-        while(rem > 0)
+        if(exp % 2 == 0)
         {
-            if(rem % 2 == 1)
-            {
-                ans *= x;
-                rem--;
-            }
-            else
-            {
-                x *= x;
-                rem /= 2;
-            }
+            ans = ans * fn(base*base, exp/2);
         }
-
-        if(flip) return 1/ans;
+        else
+        {
+            ans = ans * base;
+            ans = ans * fn(base*base, exp/2); 
+        }
 
         return ans;
     }
 
+    double myPow(double x, int n) {
+        double ans = fn(x, n);    
+
+        if(n < 0) return 1.0/ans;
+
+        return ans;
+    }
 };
