@@ -34,8 +34,8 @@ public:
         ListNode* left = fn(a);
         ListNode* right = fn(mid);
         
-        ListNode* dummyPtr = new ListNode(0);
-        ListNode* tail = dummyPtr;
+        ListNode dummyPtr(0);
+        ListNode* tail = &dummyPtr;
         
         while(left != nullptr && right != nullptr) {
             if(left->val < right->val) {
@@ -53,7 +53,7 @@ public:
         if(left) tail->next = left;
         if(right) tail->next = right;
         
-        return dummyPtr->next;
+        return dummyPtr.next;
     }
     
     ListNode* sortList(ListNode* head) {
