@@ -13,7 +13,7 @@ public:
     ListNode* half(ListNode* x) {
         ListNode* slow = x;
         ListNode* fast = x;
-        ListNode* pre = nullptr;
+        ListNode* pre;
         
         while(fast != nullptr && fast->next != nullptr) {
             pre = slow;
