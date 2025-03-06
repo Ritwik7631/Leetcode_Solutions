@@ -11,20 +11,19 @@
  */
 class Solution {
 public:
-    bool fn(TreeNode* root, long MIN, long MAX)
-    {   
+    bool valid(TreeNode* root, long mn, long mx)
+    {
         if(root == nullptr) return true;
 
-        if(!(root->val > MIN && root->val < MAX)) return false;
+        if(!(mn < root->val && mx > root->val))
+        {
+            return false;
+        }
 
-        bool l, r;
-        l = fn(root->left, MIN, root->val);
-        r = fn(root->right, root->val, MAX);
-
-        return l && r;
+        return valid(root->left, mn, root->val) && valid(root->right, root->val, mx);
     }
 
     bool isValidBST(TreeNode* root) {
-        return fn(root, LONG_MIN, LONG_MAX);
+        return valid(root, LONG_MIN, LONG_MAX);
     }
 };
