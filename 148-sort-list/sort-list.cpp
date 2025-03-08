@@ -10,53 +10,61 @@
  */
 class Solution {
 public:
-    ListNode* half(ListNode* x) {
-        ListNode* slow = x;
-        ListNode* fast = x;
-        ListNode* pre;
-        
-        while(fast != nullptr && fast->next != nullptr) {
-            pre = slow;
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-        
-        return pre;
-    }
+    ListNode* Split(ListNode* x)
+    {
+        ListNode* prev;
+        ListNode* tortoise = x;
+        ListNode* rabbit = x;
     
-    ListNode* fn(ListNode* a) {
+        while(rabbit != nullptr && rabbit->next != nullptr)
+        {
+            prev = tortoise;
+            tortoise = tortoise->next;
+            rabbit = rabbit->next->next;
+        }
+    
+        return prev;
+    }
+
+
+    ListNode* Merge(ListNode* a)
+    {
         if(a == nullptr || a->next == nullptr) return a;
+
+        ListNode* prev_mid = Split(a);
+        ListNode* mid = prev_mid->next;
         
-        ListNode* pre = half(a);
-        ListNode* mid = pre->next;
-        pre->next = nullptr;
+        prev_mid->next = nullptr;
         
-        ListNode* left = fn(a);
-        ListNode* right = fn(mid);
+        ListNode* left = Merge(a);
+        ListNode* right = Merge(mid);
         
-        ListNode dummyPtr(0);
-        ListNode* tail = &dummyPtr;
+        ListNode newanshead(0);
+        ListNode* tail = &newanshead;
         
-        while(left != nullptr && right != nullptr) {
-            if(left->val < right->val) {
+        while(left != nullptr && right != nullptr)
+        {
+            if(left->val < right->val)
+            {
                 tail->next = left;
-                left = left->next;
+            left = left->next;
             }
-            else {
+            else
+            {
                 tail->next = right;
-                right = right->next;
+            right = right->next;
             }
             
             tail = tail->next;
         }
         
-        if(left) tail->next = left;
-        if(right) tail->next = right;
+        if(right != nullptr) tail->next = right;
+        if(left != nullptr) tail->next = left;
         
-        return dummyPtr.next;
+        return newanshead.next;
     }
-    
+
     ListNode* sortList(ListNode* head) {
-        return fn(head);
+        return Merge(head);
     }
 };
