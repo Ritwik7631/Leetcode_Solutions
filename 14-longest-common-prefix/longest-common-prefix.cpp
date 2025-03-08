@@ -20,17 +20,11 @@ public:
             bool flag = true;
             for(int j = 0; j < strs.size(); j++)
             {
-                if(strs[j][i] == h) continue;
-                else
+                if(strs[j][i] != h)
                 {
-                    flag = false;
-                    break;
+                    return shortest.substr(0,i);
                 }
-            }
 
-            if(flag == false)
-            {
-                return shortest.substr(0, i);
             }
         }
 
