@@ -38,8 +38,8 @@ public:
                 scores.push(x);
                 scores.push(y+x);
                 
-                cout << "+" << " " << endl;
-                cout << y << " " << x << " " << y+x << " " << endl;
+                // cout << "+" << " " << endl;
+                // cout << y << " " << x << " " << y+x << " " << endl;
             }
 
             if(a == "D")
@@ -50,8 +50,8 @@ public:
                 scores.push(x);
                 scores.push(x*2);
                 
-                cout << "D" << endl;
-                cout << x << " " << x*2 << " " << endl;
+                // cout << "D" << endl;
+                // cout << x << " " << x*2 << " " << endl;
             }
 
             if(a == "C")
