@@ -27,8 +27,7 @@ public:
             pair<int,char> left = vow[l];
             pair<int,char> right = vow[r];
 
-            s[left.first] = right.second;
-            s[right.first] = left.second;
+            swap(s[left.first], s[right.first]);
 
             l++;
             r--;
