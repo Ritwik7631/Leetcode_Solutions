@@ -2,24 +2,25 @@ class Solution {
 public:
     int scoreOfParentheses(string s) {
         stack<int> stk;
-
-        int ans = 0;
-
+        stk.push(0);
+        
         for(auto a : s)
         {
             if(a == '(')
             {
-                stk.push(ans);
-                ans = 0;
+                stk.push(0);
             }
             else
             {
-                ans = stk.top() + max(2*ans, 1);
+                int topval = stk.top();
                 stk.pop();
+
+                int computed = max(2*topval, 1);
+                stk.top() += computed;
             }
         }
 
-        return ans;
+        return stk.top();
     }
 };
 
