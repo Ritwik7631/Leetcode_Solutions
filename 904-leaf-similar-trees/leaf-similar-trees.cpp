@@ -32,9 +32,6 @@ public:
         fn(root1, r1);
         fn(root2, r2);
 
-        for(auto a : r1) cout << a << " " << endl;
-        for(auto b : r2) cout << b << " " << endl;
-
         return r1 == r2;
     }
 };
