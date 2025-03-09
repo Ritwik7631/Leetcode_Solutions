@@ -10,10 +10,10 @@
  */
 class Solution {
 public:
-    ListNode* ans = nullptr;
+    ListNode* ans;
 
     void fn(ListNode* curr)
-    {  
+    {
         if(curr->next == nullptr)
         {
             ans = curr;
@@ -22,14 +22,11 @@ public:
 
         fn(curr->next);
 
-        curr->next->next = curr;  
+        curr->next->next = curr;
     }
 
     ListNode* reverseList(ListNode* head) {
-        
-        ListNode* mover = head;
-
-        if(head == nullptr) return head;
+        if(head == nullptr) return nullptr;
 
         fn(head);
 
