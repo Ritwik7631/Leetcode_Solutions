@@ -10,76 +10,82 @@
  */
 class Solution {
 public:
-    void rv(ListNode* a, ListNode* b)
+    ListNode* newhead = nullptr;
+
+    void fn(ListNode* curr, ListNode* b)
     {
-        if(a->next == b)
+        if(curr == b)
         {
-            b->next = a;
+            newhead = b;
             return;
         }
 
-        rv(a->next, b);
+        fn(curr->next, b);
 
-        a->next->next = a;
+        curr->next->next = curr;
     }
 
     ListNode* reverseKGroup(ListNode* head, int k) {
-        if(k == 1) return head;
+        if(head == nullptr || k == 1) return head;
 
         ListNode* anshead = nullptr;
-
-        ListNode* currend;
-
-        int s = 0;
-        int e = k-1;
-
-        ListNode* start = nullptr;
-        ListNode* end = nullptr;
+        ListNode* tail = anshead;
 
         ListNode* mover = head;
-
-        int c = -1;
-
+        
+        int count = 1;
+        ListNode* left;
+        ListNode* right;
         while(mover != nullptr)
         {
-            c++;
-
-            if(c == s)
+            if(count == 1)
             {
-                start = mover;
+                left = mover;
+                mover = mover->next;
             }
-            
-            if(c == e)
+            else if(count == k)
             {
-                end = mover;
+                right = mover;
+                ListNode* after = right->next;
+                right->next = nullptr;
 
-                ListNode* nxt = mover->next;
+                fn(left, right);
 
-                rv(start, end);
-
-                start->next = nxt;
+                left->next = nullptr;
 
                 if(anshead == nullptr)
                 {
-                    anshead = end;
-                    currend = start;
+                    anshead = newhead;
                 }
                 else
                 {
-                    currend->next = end;
-                    currend = start;
+                    tail->next = newhead;    
                 }
 
-                c = -1;
-
-                mover = nxt;
+                tail = left;
+                count = 1;
+                mover = after;
                 continue;
             }
+            else
+            {
+                mover = mover->next;
+            }
 
-            mover = mover->next;
+            count++;
         }
 
-        if(anshead == nullptr) return head;
+        if(count != 1)
+        {
+            if(anshead == nullptr)
+            {
+                anshead = left;
+            }
+            else
+            {
+                tail->next = left;
+            }
+        }
 
         return anshead;
     }
