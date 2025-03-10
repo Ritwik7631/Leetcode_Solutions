@@ -1,102 +1,39 @@
 class Solution {
 public:
-    // int fn(int i, vector<int>& nums, vector<int>& dp)
-    // {   
-    //     if(i < 0) return 0;
-    //     if(dp[i] != -1) return dp[i];
-
-    //     int pick = nums[i];
-    //     if (i >= 2) {
-    //         pick += fn(i-2, nums, dp);
-    //     }
-    //     int notpick = fn(i-1, nums, dp);
-
-    //     return dp[i] = max(pick, notpick);
-    // }
-
-    // int bottomup(vector<int> nums)
-    // {
-    //     int n = nums.size();
-    //     if(n == 1) return nums[0];
-    //     if(n == 2) return max(nums[0], nums[1]);
-
-    //     vector<int> dp(n, 0);
-    //     dp[0] = nums[0];
-    //     dp[1] = max(nums[0], nums[1]);
-
-    //     for(int i = 2; i < n; i++)
-    //     {
-    //         int pick = nums[i] + dp[i-2];
-    //         int notpick = dp[i-1];
-    //         dp[i] = max(pick, notpick);            
-    //     }
-
-    //     return dp[n-1];
-    // }
-
-    int spaceoptimized(vector<int> nums)
+    int fn(int i, vector<int>& nums, vector<int>& dp)
     {
-        int n = nums.size();
-        if(n == 1) return nums[0];
-        if(n == 2) return max(nums[0], nums[1]);
-
-        
-        int prev1 = nums[0];
-        int prev2 = max(nums[0], nums[1]);
-        int cur;
-
-        for(int i = 2; i < n; i++)
+        if(i == 0)
         {
-            int pick = nums[i] + prev1;
-            int notpick = prev2;
-            cur = max(pick, notpick);
-
-            prev1 = prev2;
-            prev2 = cur;            
+            return nums[i];
         }
 
-        return prev2;
+        if(i == 1) return max(nums[0], nums[1]);
+
+        if(dp[i] != -1) return dp[i];
+
+        // rob
+        int rob = 0;
+        if(i-2 >= 0) rob = nums[i] + fn(i-2, nums,dp);
+
+        // no rob
+        int norob = 0;
+        if(i-1 >= 0) norob = fn(i-1, nums,dp);
+
+        return dp[i]=max(rob, norob);
     }
 
     int rob(vector<int>& nums) {
-
-        // int n = nums.size();
-        // if (n == 1) return nums[0];
-
-        // vector<int> nums1(nums.begin(), nums.end()-1);
-        // vector<int> nums2(nums.begin() + 1, nums.end());
-
-        // int a = nums1.size();
-        // int b = nums2.size();
-
-        // vector<int> dp(a, -1);
-        // vector<int> dp2(b, -1);
-
-        // return max(fn(a-1, nums1, dp), fn(b-1, nums2, dp2));
-
-// --------------------------------------------------------------
-
-        // int n = nums.size();
-        // if (n == 1) return nums[0];
-
-        // vector<int> arr1(nums.begin() + 1, nums.end()); 
-        // vector<int> arr2(nums.begin(), nums.end() - 1); 
-
-        // int ans1 = bottomup(arr1);
-        // int ans2 = bottomup(arr2);
-
-        // return max(ans1, ans2);
-// -------------------------------------------------------------------
+        
         int n = nums.size();
-        if (n == 1) return nums[0];
 
-        vector<int> arr1(nums.begin() + 1, nums.end()); 
-        vector<int> arr2(nums.begin(), nums.end() - 1); 
+        if(n == 1) return nums[0];
 
-        int ans1 = spaceoptimized(arr1);
-        int ans2 = spaceoptimized(arr2);
+        vector<int> a(nums.begin()+1, nums.end());
+        vector<int> b(nums.begin(), nums.begin()+n-1);
 
-        return max(ans1, ans2);
+        vector<int> dp1(a.size()+1, -1);
+        vector<int> dp2(b.size()+1, -1);
 
+        return max(fn(a.size()-1, a, dp1), fn(b.size()-1, b, dp2));
     }
 };
