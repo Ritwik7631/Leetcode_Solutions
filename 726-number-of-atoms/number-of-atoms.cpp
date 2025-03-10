@@ -17,10 +17,16 @@ public:
                     i++;
                 }
                 if(multiplier == 0) multiplier = 1;
-                auto topMap = st.top();
+                // Retrieve the map for the inner group and remove it from the stack.
+                auto innerGroupCounts = st.top();
                 st.pop();
-                for(auto &p : topMap) {
-                    st.top()[p.first] += p.second * multiplier;
+
+                // Multiply counts by the multiplier and add them to the outer group's map.
+                for (auto &entry : innerGroupCounts) {
+                    const string &atom = entry.first;
+                    int countInGroup = entry.second;
+                    int scaledCount = countInGroup * multiplier;
+                    st.top()[atom] += scaledCount;
                 }
             } else {
                 // Parse an element name.
