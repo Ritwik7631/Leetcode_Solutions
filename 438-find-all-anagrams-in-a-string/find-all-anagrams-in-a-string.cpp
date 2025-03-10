@@ -3,14 +3,11 @@ public:
     vector<int> findAnagrams(string s, string p) {
         if(p.size() > s.size()) return {};
 
-        vector<int> target(26);
+        vector<int> target(26,0);
 
-        for(auto a : p)
-        {
-            target[a - 'a']++;
-        }
+        for(auto a: p) target[a - 'a']++;
 
-        vector<int> window(26);
+        vector<int> window(26,0);
 
         for(int i = 0; i < p.size(); i++)
         {
@@ -19,20 +16,19 @@ public:
 
         vector<int> ans;
 
+        if(window == target) ans.push_back(0);
+
         int l = 0;
-        int r = l + p.size() - 1;
 
-        while(r+1 < s.size())
+        for(int r = p.size(); r < s.size(); r++)
         {
-            if(window == target) ans.push_back(l);
+            if(window[s[l] - 'a'] > 0) window[s[l] - 'a']--;
 
-            window[s[l] - 'a']--;
-            r++;
-            window[s[r] - 'a']++;
             l++;
-        }
+            window[s[r] - 'a']++;
 
-        if(window == target) ans.push_back(l);
+            if(window == target) ans.push_back(l);
+        }
 
         return ans;
     }
