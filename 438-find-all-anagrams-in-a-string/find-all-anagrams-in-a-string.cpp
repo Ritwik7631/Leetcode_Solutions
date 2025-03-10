@@ -18,16 +18,12 @@ public:
 
         if(window == target) ans.push_back(0);
 
-        int l = 0;
-
         for(int r = p.size(); r < s.size(); r++)
         {
-            if(window[s[l] - 'a'] > 0) window[s[l] - 'a']--;
+            window[s[r]-'a']++;
+            window[s[r-p.size()] - 'a']--;
 
-            l++;
-            window[s[r] - 'a']++;
-
-            if(window == target) ans.push_back(l);
+            if(window == target) ans.push_back(r-p.size()+1);
         }
 
         return ans;
