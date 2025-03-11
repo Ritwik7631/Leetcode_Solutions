@@ -6,9 +6,9 @@ public:
         if(k > n) k = k % n;
 
         queue<int> q;
+
         reverse(nums.begin(), nums.end());
         for(auto a : nums) q.push(a);
-        reverse(nums.begin(), nums.end());
 
         queue<int> nw;
 
