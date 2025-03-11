@@ -1,56 +1,32 @@
 class Solution {
 public:
-    // the function returns whether we have a complete match from 0 to i with pattern 0 to j
-    bool fn(int i, int j, string &s, string &p, vector<vector<int>> &dp)
-    {
-        if(i < 0)
-        {
-            if(j < 0) return true;
-
-            if(p[j] == '*')
-            {
-                return fn(i, j-2, s, p, dp);
-            }
-
+    bool fn(int i, int j, string &p, string &s) {
+        // Base cases
+        if(i < 0 && j < 0) return true;         // Both pattern and string are exhausted.
+        if(i < 0 && j >= 0) return false;        // Pattern is empty but string is not.
+        if(j < 0) {                            // String is empty.
+            // The remaining pattern must form valid "x*" pairs to match an empty string.
+            if(i > 0 && p[i] == '*')
+                return fn(i - 2, j, p, s);
             return false;
         }
-
-        if(j < 0) return false;
-
-        if(dp[i][j] != -1) return dp[i][j];
-
-        if(p[j] == '.')
-        {
-            return dp[i][j] = fn(i-1, j-1, s, p, dp);
-        }
-        else if(p[j] == '*')
-        {
-            char prec = p[j-1];
-
-            bool ignore = fn(i, j-2, s, p, dp);
-
-            if(prec == s[i] || prec == '.')
-            {
-                bool match_move = fn(i-1, j-2, s, p, dp);
-                bool match_stay = fn(i-1, j, s, p, dp); 
-
-                ignore = ignore || match_move || match_stay;
-            }
-
-            return dp[i][j] = ignore;
-        }
-        else if(s[i] == p[j])
-        {
-            return dp[i][j] = fn(i-1, j-1, s, p, dp);
-        }
-
-        return dp[i][j] = false;
+        
+        // Direct match or '.' wildcard.
+        if(p[i] == s[j] || p[i] == '.')
+            return fn(i - 1, j - 1, p, s);
+        
+        // Handling '*' operator.
+        if(p[i] == '*')
+            return fn(i - 2, j, p, s) ||
+                ((p[i - 1] == s[j] || p[i - 1] == '.') && fn(i, j - 1, p, s));
+        
+        return false;
     }
 
     bool isMatch(string s, string p) {
-        int n = s.size();
-        int m = p.size();
-        vector<vector<int>> dp(n+1, vector<int> (m+1, -1));
-        return fn(n-1, m-1, s, p, dp);
+        int n = p.size();
+        int m = s.size();
+
+        return fn(n-1, m-1, p, s);
     }
 };
