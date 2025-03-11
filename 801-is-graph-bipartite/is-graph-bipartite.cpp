@@ -1,44 +1,43 @@
 class Solution {
 public:
-    bool dfs(int i, int parent, vector<vector<int>>& adj, vector<int>& colors)
-    {
-        for(auto a : adj[i])
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n = graph.size();
+
+        vector<int> colors(n, -1);
+
+        for(int i = 0; i < n; i++)
         {
-            if(a == parent) continue;
-
-            if(colors[a] == 2)
+            // if uncolored
+            if(colors[i] == -1)
             {
-                colors[a] = !colors[i];
-                if(!dfs(a,i,adj,colors)) return false;
-            }
-            else
-            {
-                if(colors[i] == colors[a]) return false;
-            }
-            
-        }
-
-        return true;
-    }
-
-    bool isBipartite(vector<vector<int>>& adj) {
-        // do one dfs to paint red blue
-        // do another dfs to check if there are no consecutive red or blue neighbors
-        
-        int n = adj.size();
-        vector<int> colors(n, 2);
-
-        // 0 red
-        // 1 blue
-        // 2 uncolored
-
-        for (int i = 0; i < n; i++) {
-            if (colors[i] == 2)  
-            { 
+                queue<int> q;
+                q.push(i);
                 colors[i] = 0;
-                if (!dfs(i, -1, adj, colors)) return false;
+
+                while(!q.empty())
+                {
+                    int front = q.front();
+                    q.pop();
+
+                    for(auto a : graph[front])
+                    {
+                        if(colors[a] == -1)
+                        {
+                            colors[a] = !colors[front];
+                            q.push(a);
+                        }
+                        else
+                        {
+                            if(colors[a] == colors[front])
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
         }
+
         return true;
     }
 };
