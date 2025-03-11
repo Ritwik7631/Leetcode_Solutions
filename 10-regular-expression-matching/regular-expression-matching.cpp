@@ -1,35 +1,44 @@
 class Solution {
 public:
-    bool fn(int i, int j, string &p, string &s, vector<vector<int>>& dp) {
-        // Base cases
-        if(i < 0 && j < 0) return true;         // Both pattern and string are exhausted.
-        if(i < 0 && j >= 0) return false;        // Pattern is empty but string is not.
-        if(j < 0) {                            // String is empty.
-            // The remaining pattern must form valid "x*" pairs to match an empty string.
-            if(i > 0 && p[i] == '*')
-                return fn(i - 2, j, p, s, dp);
-            return false;
+    bool isMatch(string s, string p) {
+        int m = s.size();
+        int n = p.size();
+
+        vector<vector<bool>> dp(m+1, vector<bool> (n+1, false));
+
+        dp[0][0] = true;
+
+        for(int j = 1; j <= n; j++)
+        {
+            if(p[j-1] == '*')
+            {
+                dp[0][j] = dp[0][j-2];
+            }
         }
 
-        if(dp[i][j] != -1) return dp[i][j];
-        
-        // Direct match or '.' wildcard.
-        if(p[i] == s[j] || p[i] == '.')
-            return dp[i][j] = fn(i - 1, j - 1, p, s, dp);
-        
-        // Handling '*' operator.
-        if(p[i] == '*')
-            return dp[i][j] = fn(i - 2, j, p, s, dp) ||
-                ((p[i - 1] == s[j] || p[i - 1] == '.') && fn(i, j - 1, p, s, dp));
-        
-        return dp[i][j] = false;
-    }
+        for(int i = 1; i <= m; i++)
+        {
+            for(int j = 1; j <= n; j++)
+            {
+                if(p[j-1] == '*')
+                {
+                    dp[i][j] = dp[i][j-2];
 
-    bool isMatch(string s, string p) {
-        int n = p.size();
-        int m = s.size();
-        vector<vector<int>> dp(n+1, vector<int>(m+1,-1));
+                    if(p[j-2] == '.' || p[j-2] == s[i-1])
+                    {
+                        dp[i][j] = dp[i][j] || dp[i-1][j];
+                    }
+                }
+                else
+                {
+                    if(p[j-1] == '.' || p[j-1] == s[i-1])
+                    {
+                        dp[i][j] = dp[i-1][j-1];
+                    }
+                }
+            }
+        }
 
-        return fn(n-1, m-1, p, s, dp);
+        return dp[m][n];
     }
 };
