@@ -21,22 +21,11 @@ public:
         return true;
     }
 
-    bool isBipartite(vector<vector<int>>& graph) {
+    bool isBipartite(vector<vector<int>>& adj) {
         // do one dfs to paint red blue
         // do another dfs to check if there are no consecutive red or blue neighbors
         
-        int n = graph.size();
-        vector<vector<int>> adj(n);
-
-        for(int i = 0; i < graph.size(); i++)
-        {
-            for(int j = 0; j < graph[i].size(); j++)
-            {
-                adj[i].push_back(graph[i][j]);
-                adj[graph[i][j]].push_back(i);
-            }
-        }
-
+        int n = adj.size();
         vector<int> colors(n, 2);
 
         // 0 red
