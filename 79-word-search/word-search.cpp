@@ -33,14 +33,12 @@ public:
         int n = board.size();
         int m = board[0].size();
 
-        vector<vector<int>> vis(n, vector<int>(m, -1));
-
         for(int i = 0; i < n; i++)
         {
             for(int j = 0; j < m; j++)
             {
                 string temp = "";
-
+                vector<vector<int>> vis(n, vector<int>(m, -1));
                 if(dfs({i,j}, board, word, temp, vis)) return true;
             }
         }
