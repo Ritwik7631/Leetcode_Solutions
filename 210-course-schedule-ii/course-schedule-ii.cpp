@@ -1,109 +1,64 @@
 class Solution {
 public:
-    bool DFS(int i, vector<int> &vis, vector<int> &path_vis, vector<vector<int>> &adj, vector<int> &ans)
+    bool dfs(int i, vector<int>& vis, vector<int>& path_vis, vector<vector<int>>& adj, vector<int>& order)
     {
         vis[i] = 1;
         path_vis[i] = 1;
 
         for(auto a : adj[i])
         {
-            if(vis[a] == 0)
+            if(!vis[a])
             {
-                if(DFS(a, vis, path_vis, adj, ans)) return true;;
+                if(!dfs(a, vis, path_vis, adj, order)) return false;
             }
-            else if(path_vis[a] == 1)
+            else
             {
-                return true;
-            }
+                if(path_vis[a] == 1)
+                {
+                    return false;
+                }
+            }       
         }
 
-        ans.push_back(i);
+        order.push_back(i);
+
         path_vis[i] = 0;
-        return false;
+
+        return true;
     }
 
-    vector<int> findOrder(int n, vector<vector<int>>& x) {
-// topo sort using BFS/ Kahn's algorithm
-        // vector<int> ans;
-        // vector<int> inDegree(n, 0);
-        // queue<int> q;
-        // vector<vector<int>> adj(n);
-
-        // for(int i = 0; i < x.size(); i++)
-        // {
-        //     int a = x[i][0];
-        //     int b = x[i][1];
-
-        //     adj[b].push_back(a);
-        // }
-
-        // for(int i = 0; i < n; i++)
-        // {
-        //     for(auto c : adj[i])
-        //     {
-        //         inDegree[c]++;
-        //     }
-        // }
-
-        // for(int i = 0; i < n; i++)
-        // {
-        //     if(inDegree[i] == 0)
-        //     {
-        //         q.push(i);
-        //     }
-        // }
-
-        // while(!q.empty())
-        // {
-        //     int val = q.front();
-        //     q.pop();
-        //     ans.push_back(val);
-
-        //     for(auto a : adj[val])
-        //     {
-        //         inDegree[a]--;
-
-        //         if(inDegree[a] == 0)
-        //         {
-        //             q.push(a);
-        //         }
-        //     }
-        // }
-
-        // int total = accumulate(inDegree.begin(), inDegree.end(), 0);
-
-        // if(total != 0)
-        // {
-        //     return {};
-        // }
-
-        // return ans;
-// Topo Sort using DFS
-
+    vector<int> findOrder(int n, vector<vector<int>>& prereq) {
         vector<vector<int>> adj(n);
 
-        for(int i = 0; i < x.size(); i++)
+        for(int i = 0; i < prereq.size(); i++)
         {
-            int a = x[i][0];
-            int b = x[i][1];
+            int a = prereq[i][0];
+            int b = prereq[i][1];
 
             adj[b].push_back(a);
         }
 
-        vector<int> vis(n, 0);
-        vector<int> path_vis(n, 0);
-        vector<int> ans;
+        vector<int> vis(n);
+        vector<int> path_vis(n);
+        vector<int> order;
 
         for(int i = 0; i < n; i++)
         {
             if(vis[i] == 0)
             {
-                if(DFS(i, vis, path_vis, adj, ans)) return {};
+                if(!dfs(i, vis, path_vis, adj, order))
+                {
+                    return {};
+                }
             }
         }
-        
-        reverse(ans.begin(), ans.end());
-        return ans;
 
+        if(!order.empty())
+        {
+            reverse(order.begin(), order.end());
+            return order;
+        }
+
+        return {};
     }
 };
