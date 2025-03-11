@@ -1,45 +1,50 @@
 class Solution {
 public:
-    int ROWS, COLS;
-    vector<vector<bool>> visited;
-    vector<int> rdel = {1, 0, -1, 0};
-    vector<int> cdel = {0, -1, 0, 1};
+    vector<int> rdel{1,0,-1,0};
+    vector<int> cdel{0,-1,0,1};
 
-    bool exist(vector<vector<char>>& board, string word) {
-        ROWS = board.size();
-        COLS = board[0].size();
-        visited = vector<vector<bool>>(ROWS, vector<bool>(COLS, false));
+    bool dfs(vector<int> curr, vector<vector<char>>& board, string& word, string& temp, vector<vector<int>>& vis)
+    {
+        if (board[curr[0]][curr[1]] != word[temp.size()]) return false;
 
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLS; c++) {
-                if (board[r][c] == word[0]) {
-                    visited[r][c] = true;
-                    if (dfs(board, word, r, c, 1))
-                        return true;
-                    visited[r][c] = false;
-                }
+        vis[curr[0]][curr[1]] = 1;
+        temp += board[curr[0]][curr[1]];
+
+        if(temp == word) return true;
+
+        for(int d = 0; d < 4; d++)
+        {
+            int nr = curr[0] + rdel[d];
+            int nc = curr[1] + cdel[d];
+
+            if(nr >= 0 && nr < board.size() && nc >= 0 && nc < board[0].size() && vis[nr][nc] == -1)
+            {
+                if(dfs({nr,nc}, board, word, temp, vis) == true) return true;
             }
         }
+
+        vis[curr[0]][curr[1]] = -1;
+        temp.pop_back();
+
         return false;
     }
 
-    bool dfs(vector<vector<char>>& board, const string &word, int r, int c, int idx) {
-        if (idx == word.size())
-            return true;
+    bool exist(vector<vector<char>>& board, string word) {
+        int n = board.size();
+        int m = board[0].size();
 
-        for (int d = 0; d < 4; d++) {
-            int nr = r + rdel[d];
-            int nc = c + cdel[d];
+        vector<vector<int>> vis(n, vector<int>(m, -1));
 
-            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS &&
-                visited[nr][nc] == false && board[nr][nc] == word[idx]) {
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < m; j++)
+            {
+                string temp = "";
 
-                visited[nr][nc] = true;
-                if (dfs(board, word, nr, nc, idx + 1)) return true;
-                visited[nr][nc] = false;  
-
+                if(dfs({i,j}, board, word, temp, vis)) return true;
             }
         }
+
         return false;
     }
 };
