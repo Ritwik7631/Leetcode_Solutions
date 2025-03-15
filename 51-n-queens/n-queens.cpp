@@ -1,9 +1,9 @@
 class Solution {
 public:
     vector<vector<string>> ans;
-    set<int> col;
-    set<int> positive_diag;
-    set<int> negative_diag;
+    unordered_set<int> col;
+    unordered_set<int> positive_diag;
+    unordered_set<int> negative_diag;
 
     void dfs(int r, int n, vector<string>& board)
     {
