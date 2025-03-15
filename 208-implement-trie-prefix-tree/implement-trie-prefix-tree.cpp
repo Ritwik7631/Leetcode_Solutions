@@ -29,7 +29,7 @@ struct Node{
 };
 
 class Trie {
-private: Node* root;
+Node* root;
 
 public:
     Trie() {
