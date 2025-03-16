@@ -76,7 +76,9 @@ public:
         {
             if(!node->containsKey(ch)) return false;
 
-            return SearchInNode(word, i+1, node->get(ch));
+            if(SearchInNode(word, i+1, node->get(ch))) return true;
+
+            return false;
         }
     }
 };
