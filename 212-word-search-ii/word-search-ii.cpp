@@ -71,7 +71,6 @@ public:
         {
             result.insert(node->word);
             node->flag = false;     // no longer a valid end
-            node->word.clear();     // clear word to prevent duplicates
             foundCount++;
         }
 
@@ -94,7 +93,6 @@ public:
                 vis[nr][nc] == 0)
             {
                 dfs(board, vis, nr, nc, node, result, foundCount, totalWords);
-                // After DFS, check if we have found all words
                 if (foundCount == totalWords)
                 {
                     break;
@@ -119,47 +117,30 @@ public:
         }
 
         int n = board.size();
-        if (n == 0)
-        {
-            return {};
-        }
         int m = board[0].size();
 
-        // 2. Prepare visited matrix
         vector<vector<int>> vis(n, vector<int>(m, 0));
 
-        // 3. We'll store found words in this set
         unordered_set<string> result;
 
-        // 4. Keep track of how many distinct words have been found
         int foundCount = 0;
         int totalWords = (int)uniqueWords.size();
 
-        // 5. DFS from each cell if root has a child for that char
         for (int i = 0; i < n; i++)
         {
-            // Outer loop
             for (int j = 0; j < m; j++)
             {
-                // Skip if root doesn't have a child for board[i][j]
                 if (root->containsKey(board[i][j]))
                 {
                     dfs(board, vis, i, j, root, result, foundCount, totalWords);
-                    // After DFS, check if we have found all words
-                    if (foundCount == totalWords)
-                    {
-                        break; // break out of inner loop
-                    }
+
+                    if (foundCount == totalWords) break;
                 }
             }
-            // Check again after the inner loop
-            if (foundCount == totalWords)
-            {
-                break; // break out of outer loop
-            }
+
+            if (foundCount == totalWords) break;
         }
 
-        // 6. Convert found words to a vector
         vector<string> ans(result.begin(), result.end());
         return ans;
     }
