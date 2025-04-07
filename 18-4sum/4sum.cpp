@@ -1,46 +1,51 @@
+
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int>> ans;
-        int n = nums.size();
-
-        sort(nums.begin(), nums.end());
-
-        for(int a = 0; a < n; a++)
-        {
-            if(a > 0 && nums[a] == nums[a-1]) continue;
-            for(int b = a + 1; b < n; b++)
-            {
-                if(b > a+1 && nums[b] == nums[b-1]) continue;
-
-                int c = b+1;
-                int d = n-1;
-
-                while(c < d)
-                {
-                    long long sum = (long long)nums[a] + (long long)nums[b] + (long long)nums[c] + (long long)nums[d];
-
-                    if(sum == target)
+		vector<vector<int>> result;
+		
+		int n = nums.size();
+		
+		sort(nums.begin(), nums.end());
+		
+		for(int i = 0; i < n-3; i++)
+		{
+			if(i > 0 && nums[i] == nums[i-1]) continue;
+			
+			for(int j = i + 1; j < n-2; j++)
+			{
+				if(j > i+1 && nums[j] == nums[j-1]) continue;
+				
+				int left = j+1;
+				int right = n-1;
+				
+				while(left < right)
+				{
+					long long sum = (long long)nums[i] + nums[j] + nums[left] + nums[right];
+					
+					if(sum < target)
+					{
+						left++;
+					}
+					else if(sum > target)
+					{
+						right--;
+					}
+					else
                     {
-                        vector<int> temp = {nums[a], nums[b], nums[c], nums[d]};
-                        ans.push_back(temp);
-                        c++;
-                        d--;
-                        while(c < d && nums[c] == nums[c-1]) c++;
-                        while(c < d && nums[d] == nums[d+1]) d--;
+                        result.push_back({nums[i], nums[j], nums[left], nums[right]});
+					
+                        while(left < right && nums[left] == nums[left+1]) left++;
+                        
+                        while(left < right && nums[right] == nums[right-1]) right--;
+                        
+                        left++;
+                        right--;
                     }
-                    else if(sum < target)
-                    {
-                        c++;
-                    }
-                    else
-                    {
-                        d--;
-                    }
-                }
-            }
-        }
-
-        return ans;
+				}
+			}
+		}
+		
+		return result;
     }
 };
