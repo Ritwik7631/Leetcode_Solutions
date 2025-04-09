@@ -5,40 +5,48 @@ public:
 
         sort(nums.begin(), nums.end());
 
-        vector<vector<int>> ans;
+        set<vector<int>> pre_ans;
 
-        for(int a = 0; a < n; a++)
+        for(int i = 0; i < n-2; i++)
         {
-            if(a > 0 && nums[a] == nums[a-1]) continue;
+            if(i > 0 && nums[i-1] == nums[i]) continue;
+            
+            int left = i+1;
+            int right = n-1;
 
-            int b = a + 1;
-            int c = n - 1;
-
-            while(b < c)
+            while(left < right)
             {
-                int x = nums[a] + nums[b] + nums[c];
-                if(x == 0)
+                int sum = nums[i] + nums[left] + nums[right];
+
+                if(sum == 0)
                 {
-                    ans.push_back({nums[a], nums[b], nums[c]});
+                    multiset<int> temp = {nums[i], nums[left], nums[right]};
+                    vector<int> actual(temp.begin(), temp.end());
+                    pre_ans.insert(actual);
+                    
+                    while(left < right && nums[left] == nums[left+1]) left++;
 
-                    while(b < c && nums[b] == nums[b+1]) b++;
+                    while(left < right && nums[right] == nums[right-1]) right--;
 
-                    while(b < c && nums[c] == nums[c-1]) c--;
-
-                    b++;
-                    c--;
+                    left++;
+                    right--;
                 }
-                else if(x < 0)
+                else if(sum < 0)
                 {
-                    b++;
+                    left++;
                 }
                 else
                 {
-                    c--;
+                    right--;
                 }
             }
+            
         }
 
+        vector<vector<int>> ans(pre_ans.begin(), pre_ans.end());
         return ans;
+
+        // -4 -1 -1 0 1 2
+        //     i  j     lr
     }
 };
