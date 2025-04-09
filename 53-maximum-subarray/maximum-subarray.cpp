@@ -1,35 +1,23 @@
 class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
-        int n = nums.size();
+        int max_sum = INT_MIN;
 
-        // time complexity will not allow nested for loops
+        int current_sum = 0;
 
-        // for(auto a : prefix)
-        // {
-        //     cout << "  " << a << "  ";
-        // }
-        // cout << endl;
-
-        // for(auto a : suffix)
-        // {
-        //     cout << "  " << a << "  ";
-        // }
-        // cout << endl;
-
-        int max_subarray_sum = INT_MIN;
-        int current_prefix_sum = 0;
-        int min_prefix_sum = 0;
-
-        for(int i = 0; i < n; i++)
+        for(auto a : nums)
         {
-            current_prefix_sum += nums[i];
+            current_sum += a;
 
-            max_subarray_sum = max(max_subarray_sum, current_prefix_sum - min_prefix_sum);
+            max_sum = max(max_sum, current_sum);
 
-            min_prefix_sum = min(min_prefix_sum, current_prefix_sum);
+            if(current_sum < 0)
+            {
+                current_sum = 0;
+            }
         }
 
-        return max_subarray_sum;
+
+        return max_sum;
     }
 };
