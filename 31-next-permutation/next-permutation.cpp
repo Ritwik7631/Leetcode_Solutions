@@ -3,38 +3,36 @@ public:
     void nextPermutation(vector<int>& nums) {
         int n = nums.size();
 
-        int i = n-1;
+        int valley_ind = -1;
 
-        while(i > 0 && nums[i] <= nums[i-1])
+        for(int i = n-2; i >= 0; i--)
         {
-            i--;
-        }
-
-        if(i == 0)
-        {
-            reverse(nums.begin(), nums.end()); 
-            return;
-        }
-
-        // sort(nums.begin() + i, nums.end()); // THIS IS NOT ALLOWED
-
-        reverse(nums.begin() + i, nums.end());
-
-        for(int k = i; k < n; k++)
-        {
-            if(nums[k] > nums[i-1])
+            if(nums[i] < nums[i+1])
             {
-                nums[i-1] = nums[i-1]^nums[k];
-                nums[k] = nums[k]^nums[i-1];
-                nums[i-1] = nums[i-1]^nums[k];
+                valley_ind = i;
                 break;
             }
         }
 
-        return;
+        if(valley_ind == -1)
+        {
+            reverse(nums.begin(), nums.end());
+            return;
+        }
 
+        int x;
 
+        for(int i = n-1; i >= 0; i--)
+        {
+            if(nums[i] > nums[valley_ind])
+            {
+                x = i;
+                break;
+            }
+        }
 
+        swap(nums[x], nums[valley_ind]);
 
+        reverse(nums.begin() + valley_ind + 1, nums.end());
     }
 };
