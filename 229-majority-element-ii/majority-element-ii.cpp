@@ -44,15 +44,15 @@ public:
             if(element2 == nums[i]) count2++;
         }
 
-        cout << element1 << " " << element2 << endl;
+        // cout << element1 << " " << element2 << endl;
 
-        set<int> ans;
+        vector<int> ans;
 
-        if(count1 >= n/3 + 1) ans.insert(element1);
+        if(count1 >= n/3 + 1) ans.push_back(element1);
 
-        if(count2 >= n/3 + 1) ans.insert(element2);
+        if(count2 >= n/3 + 1) ans.push_back(element2);
 
-        return vector<int>(ans.begin(), ans.end());
+        return ans;
 
         
     }
