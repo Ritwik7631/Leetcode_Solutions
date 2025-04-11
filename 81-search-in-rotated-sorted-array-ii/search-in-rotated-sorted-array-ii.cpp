@@ -18,6 +18,12 @@ public:
                 continue;
             }
 
+            if(nums[r] == nums[mid])
+            {
+                r--;
+                continue;
+            }
+
             if(nums[l] <= nums[mid])
             {
                 if(target >= nums[l] && target <= nums[mid])
