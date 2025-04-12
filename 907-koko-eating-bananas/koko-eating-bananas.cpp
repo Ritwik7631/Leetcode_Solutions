@@ -1,28 +1,28 @@
 class Solution {
 public:
-    bool caneat(vector<int>& piles, int k, int h)
+    bool KokoCanEat(int k, vector<int>& piles, int h)
     {
-        int c = 0;
+        int count = 0;
 
         for(auto a : piles)
         {
-            c += (a + k - 1) / k;
+            count += (a + k - 1) / k;  // integer version of ceil(a / k)
         }
 
-        return c <= h;
+        return count <= h;
     }
 
     int minEatingSpeed(vector<int>& piles, int h) {
-        int mx = *max_element(piles.begin(), piles.end());
+        int n = piles.size();
 
         int l = 1;
-        int r = mx;
+        int r = *max_element(piles.begin(), piles.end());
 
         while(l < r)
         {
             int mid = l + (r-l)/2;
 
-            if(caneat(piles, mid, h))
+            if(KokoCanEat(mid, piles, h))
             {
                 r = mid;
             }
@@ -33,5 +33,17 @@ public:
         }
 
         return l;
+
+        // l = 20 r = 25
+        // mid = 22
+        // 2 + 1 + 2 + 1 + 1 = 7
+        // l = 23 r = 25
+        // mid = 24
+        // 2 + 1 + 1 + 1 + 1 = 6
+        // l = 23 r = 24
+        // mid = 23
+        // 2 + 1 + 1 + 1 + 1 = 6
+        // r = 23
+
     }
 };
