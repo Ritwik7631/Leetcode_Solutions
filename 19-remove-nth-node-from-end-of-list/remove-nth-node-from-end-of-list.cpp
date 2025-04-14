@@ -16,20 +16,17 @@ public:
         // then we will move both pointers until pointer2 reaches the end of the list.
         // then we will remove the node after pointer1.
 
-        ListNode dummy(0);
-        dummy.next = head;
+        ListNode* pointer1 = head;
+        ListNode* pointer2 = head;
 
-        if(head->next == nullptr) return nullptr;
-
-        ListNode* pointer1 = &dummy;
-        ListNode* pointer2 = &dummy;
-
-        for(int i = 0; i <= n; i++)
+        for(int i = 0; i < n; i++)
         {
-            pointer2 = pointer2->next;  
+            pointer2 = pointer2->next;
         }
 
-        while(pointer2 != nullptr)
+        if(pointer2 == nullptr) return head->next; // this makes sense because if pointer2 is nullptr, then pointer1 is the nth node from the end
+
+        while(pointer2->next != nullptr)
         {
             pointer1 = pointer1->next;
             pointer2 = pointer2->next;
@@ -37,6 +34,7 @@ public:
 
         pointer1->next = pointer1->next->next;
 
-        return dummy.next;
+        return head;
+
     }
 };
