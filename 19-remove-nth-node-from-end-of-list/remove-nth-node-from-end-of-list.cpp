@@ -11,31 +11,32 @@
 class Solution {
 public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
-        // First pass: calculate the total length of the list.
-        ListNode* mover = head;
-        int len = 0;
-        while (mover != nullptr) {
-            mover = mover->next;
-            len++;
+                // the naive solution would be to count the number of nodes in the list in one pass and then remove the nth node from the end in another pass by total nodes - n
+        // the smarter solution is to use two pointers. pointer1 will start from the head and pointer2 will start from the head + n.
+        // then we will move both pointers until pointer2 reaches the end of the list.
+        // then we will remove the node after pointer1.
+
+        ListNode dummy(0);
+        dummy.next = head;
+
+        if(head->next == nullptr) return nullptr;
+
+        ListNode* pointer1 = &dummy;
+        ListNode* pointer2 = &dummy;
+
+        for(int i = 0; i <= n; i++)
+        {
+            pointer2 = pointer2->next;  
         }
-        
-        if (n == len) {
-            return head->next;
+
+        while(pointer2 != nullptr)
+        {
+            pointer1 = pointer1->next;
+            pointer2 = pointer2->next;
         }
-        
-        int rightbefore = len - n - 1;
-        
-        int c = 0;
-        mover = head;
-        while (mover != nullptr) {
-            if (c == rightbefore) {
-                mover->next = mover->next->next;
-                break;
-            }
-            mover = mover->next;
-            c++;
-        }
-        
-        return head;
+
+        pointer1->next = pointer1->next->next;
+
+        return dummy.next;
     }
 };
