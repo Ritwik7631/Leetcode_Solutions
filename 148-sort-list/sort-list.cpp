@@ -10,61 +10,82 @@
  */
 class Solution {
 public:
-    ListNode* Split(ListNode* x)
+    ListNode* mergeTwoLists(ListNode* left, ListNode* right)
     {
-        ListNode* prev;
-        ListNode* tortoise = x;
-        ListNode* rabbit = x;
-    
-        while(rabbit != nullptr && rabbit->next != nullptr)
-        {
-            prev = tortoise;
-            tortoise = tortoise->next;
-            rabbit = rabbit->next->next;
-        }
-    
-        return prev;
-    }
+        ListNode* head = new ListNode(0);
 
+        ListNode* ans = head;
 
-    ListNode* Merge(ListNode* a)
-    {
-        if(a == nullptr || a->next == nullptr) return a;
-
-        ListNode* prev_mid = Split(a);
-        ListNode* mid = prev_mid->next;
-        
-        prev_mid->next = nullptr;
-        
-        ListNode* left = Merge(a);
-        ListNode* right = Merge(mid);
-        
-        ListNode newanshead(0);
-        ListNode* tail = &newanshead;
-        
         while(left != nullptr && right != nullptr)
         {
             if(left->val < right->val)
             {
-                tail->next = left;
-            left = left->next;
+                head->next = left;
+                left = left->next;
             }
             else
             {
-                tail->next = right;
-            right = right->next;
+                head->next = right;
+                right = right->next;
             }
-            
-            tail = tail->next;
+
+            head = head->next;
         }
-        
-        if(right != nullptr) tail->next = right;
-        if(left != nullptr) tail->next = left;
-        
-        return newanshead.next;
+
+        while(left != nullptr)
+        {
+            head->next = left;
+            left = left->next;
+            head = head->next;
+        }
+
+        while(right != nullptr)
+        {
+            head->next = right;
+            right = right->next;
+            head = head->next;
+        }
+
+        return ans->next;
+    }
+
+
+    ListNode* merge(ListNode* x)
+    {
+        if(x->next == nullptr) return x;
+
+        ListNode* slow = x;
+        ListNode* fast = x;
+        ListNode* prev_to_slow = nullptr;
+
+        while(fast != nullptr && fast->next != nullptr)
+        {
+            prev_to_slow = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        ListNode* s1 = x;
+
+        ListNode* s2 = slow;
+
+        prev_to_slow->next = nullptr;
+
+
+        ListNode* left = merge(s1);
+        ListNode* right = merge(s2);
+
+        return mergeTwoLists(left, right);
+
     }
 
     ListNode* sortList(ListNode* head) {
-        return Merge(head);
+        if(head == nullptr) return nullptr;
+
+        if(head->next == nullptr) return head;
+
+        ListNode* dummy = merge(head);
+
+        return dummy;
     }
 };
