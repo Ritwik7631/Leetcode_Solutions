@@ -1,27 +1,27 @@
 class Solution {
 public:
-    vector<vector<int>> ans;
-    void fn(int i, vector<int>& nums, vector<int> &curr)
+    void fn(int i, vector<int>& nums, vector<int> temp, vector<vector<int>>& result)
     {
-        if(i < 0)
+        if(i == nums.size())
         {
-            ans.push_back(curr);
+            result.push_back(temp);
             return;
         }
 
-        curr.push_back(nums[i]);
-        fn(i-1, nums, curr);
-        curr.pop_back();
+        // pick 
+        temp.push_back(nums[i]);
+        fn(i+1, nums, temp, result);
+        temp.pop_back();
 
-        fn(i-1, nums, curr);
-
-        return;
+        // not pick
+        fn(i+1, nums, temp, result);
     }
 
     vector<vector<int>> subsets(vector<int>& nums) {
-        vector<int> arr;
-        fn(nums.size()-1, nums, arr);
+        vector<int> temp;
+        vector<vector<int>> result;
+        fn(0, nums, temp, result);
 
-        return ans;
+        return result;
     }
 };
