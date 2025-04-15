@@ -9,54 +9,22 @@
 class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        int lena = 0;
-        int lenb = 0;
+        ListNode* pointer1 = headA;
+        ListNode* pointer2 = headB;
 
-        ListNode* mover1 = headA;
-        ListNode* mover2 = headB;
-
-        while(mover1->next != nullptr)
+        while(true)
         {
-            mover1 = mover1->next;
-            lena++;
+            if(pointer1 == pointer2) return pointer1;
+            if(pointer1 == nullptr && pointer2 == nullptr) return nullptr;
+
+            if(pointer1 == nullptr) pointer1 = headB;
+            else pointer1 = pointer1->next;
+
+            if(pointer2 == nullptr) pointer2 = headA;
+            else pointer2 = pointer2->next;
+
         }
 
-        while(mover2->next != nullptr)
-        {
-            mover2 = mover2->next;
-            lenb++;
-        }
-
-        mover1 = headA;
-        mover2 = headB;
-
-        int offset = lenb-lena;
-
-        for(int i = 0; i < abs(offset); i++)
-        {
-            if(offset < 0)
-            {
-                mover1 = mover1->next;
-            }
-            else
-            {
-                mover2 = mover2->next;
-            }
-        }
-
-        while(mover1 != nullptr && mover2 != nullptr)
-        {
-            if(mover1 != mover2)
-            {
-                mover1 = mover1->next;
-                mover2 = mover2->next;
-            }
-            else
-            {
-                return mover1;
-            }
-        }
-
-        return nullptr;        
+        return nullptr;
     }
 };
