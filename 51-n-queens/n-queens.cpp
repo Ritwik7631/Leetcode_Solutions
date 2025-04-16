@@ -10,12 +10,12 @@ public:
             if(board[i][c] == 'Q') return false;
         }
 
-        for(int i = r-1, j = c-1; i >= 0 && j >= 0; i--, j--)
+        for(int i = r, j = c; i >= 0 && j >= 0; i--, j--)
         {
             if(board[i][j] == 'Q') return false;
         }
 
-        for(int i = r-1, j = c+1; i >= 0 && j < n; i--, j++)
+        for(int i = r, j = c; i >= 0 && j < n; i--, j++)
         {
             if(board[i][j] == 'Q') return false;
         }
