@@ -1,41 +1,65 @@
 class Solution {
 public:
-    vector<vector<string>> ans;
-    unordered_set<int> col;
-    unordered_set<int> positive_diag;
-    unordered_set<int> negative_diag;
 
-    void dfs(int r, int n, vector<string>& board)
+
+    bool CanPlace(int r, int c, int n, vector<string>& board)
+    {
+
+        for(int i = 0; i < n; i++)
+        {
+            if(board[i][c] == 'Q') return false;
+        }
+
+        for(int i = r-1, j = c-1; i >= 0 && j >= 0; i--, j--)
+        {
+            if(board[i][j] == 'Q') return false;
+        }
+
+        for(int i = r-1, j = c+1; i >= 0 && j < n; i--, j++)
+        {
+            if(board[i][j] == 'Q') return false;
+        }
+
+        return true;
+    }
+
+    void fn(int r, int n, vector<string> &board, vector<vector<string>>& result)
     {
         if(r == n)
         {
-            ans.push_back(board);
+            result.push_back(board);
             return;
         }
 
-        for(int c = 0; c < n; c++)
+        for(int col = 0; col < n; col++)
         {
-            if(col.count(c) || positive_diag.count(r+c) || negative_diag.count(r-c)) continue;
-
-            board[r][c] = 'Q';
-            col.insert(c);
-            positive_diag.insert(r+c);
-            negative_diag.insert(r-c);
-
-            dfs(r+1, n, board);
-
-            board[r][c] = '.';
-            col.erase(c);
-            positive_diag.erase(r+c);
-            negative_diag.erase(r-c);
+            if(CanPlace(r, col, n, board))
+            {
+                board[r][col] = 'Q';
+                fn(r+1, n, board, result);
+                board[r][col] = '.';
+            }
         }
+
+        return;
     }
 
-    vector<vector<string>> solveNQueens(int n) {
-        vector<string> board(n, string(n, '.'));
 
-        dfs(0, n, board);
+    vector<vector<string>> solveNQueens(int n) {    
+        /*
+        Ok my approach is going is to basically asking each cell whether it can be a queen or not if it is valid we will explore that tree
+        and then backtrack after exploring
 
-        return ans;
+        if we are not able to place the queen then we will move on to the next cell and try to place a queen there
+        */
+
+       vector<vector<string>> result;
+       vector<string> board(n, string(n, '.'));
+
+
+
+       fn(0, n, board, result);
+
+       return result;
     }
 };
