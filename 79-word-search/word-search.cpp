@@ -21,9 +21,10 @@ public:
             if(nr >= 0 && nr < board.size() && nc >= 0 && nc < board[0].size() && board[nr][nc] == word[count+1] && vis[nr][nc] == 0)
             {
                 if(dfs(next_cell, count+1, board, word, vis)) return true;
-                vis[nr][nc] = 0;
             }
         }
+
+        vis[r][c] = 0;
 
         return false;
     }
