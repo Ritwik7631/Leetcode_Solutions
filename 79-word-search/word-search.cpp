@@ -1,30 +1,29 @@
 class Solution {
 public:
-    vector<int> rdel{1,0,-1,0};
-    vector<int> cdel{0,-1,0,1};
+    vector<int> rdel{1, 0, -1, 0};
+    vector<int> cdel{0, -1, 0, 1};
 
-    bool dfs(vector<int> curr, vector<vector<char>>& board, string& word, string& temp, vector<vector<int>>& vis)
+    bool dfs(int current_cell, int count, vector<vector<char>>& board, string word, vector<vector<int>>& vis)
     {
-        if (board[curr[0]][curr[1]] != word[temp.size()]) return false;
+        if(count == word.size() - 1) return true;
 
-        vis[curr[0]][curr[1]] = 1;
-        temp += board[curr[0]][curr[1]];
+        int r = current_cell/board[0].size();
+        int c = current_cell%board[0].size();
 
-        if(temp == word) return true;
+        vis[r][c] = 1;
 
         for(int d = 0; d < 4; d++)
         {
-            int nr = curr[0] + rdel[d];
-            int nc = curr[1] + cdel[d];
+            int nr = r + rdel[d];
+            int nc = c + cdel[d];
+            int next_cell = nr*board[0].size() + nc;
 
-            if(nr >= 0 && nr < board.size() && nc >= 0 && nc < board[0].size() && vis[nr][nc] == -1)
+            if(nr >= 0 && nr < board.size() && nc >= 0 && nc < board[0].size() && board[nr][nc] == word[count+1] && vis[nr][nc] == 0)
             {
-                if(dfs({nr,nc}, board, word, temp, vis) == true) return true;
+                if(dfs(next_cell, count+1, board, word, vis)) return true;
+                vis[nr][nc] = 0;
             }
         }
-
-        vis[curr[0]][curr[1]] = -1;
-        temp.pop_back();
 
         return false;
     }
@@ -33,13 +32,13 @@ public:
         int n = board.size();
         int m = board[0].size();
 
-        for(int i = 0; i < n; i++)
+        for(int start = 0; start < n*m; start++)
         {
-            for(int j = 0; j < m; j++)
+            if(board[start/m][start%m] == word[0])
             {
-                string temp = "";
-                vector<vector<int>> vis(n, vector<int>(m, -1));
-                if(dfs({i,j}, board, word, temp, vis)) return true;
+                int count = 0;
+                vector<vector<int>> vis(n, vector<int> (m, 0));
+                if(dfs(start, count, board, word, vis)) return true;
             }
         }
 
