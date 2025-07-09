@@ -1,64 +1,68 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
-    vector<int> parent;
-    vector< set<int> > active;          // keeps active stations per root
-
-    void init(int n){
-        parent.resize(n+1);
-        active.resize(n+1);
-        for (int i = 1; i <= n; ++i){
-            parent[i] = i;
-            active[i].insert(i);        // every station starts online
+    void dfs(int i, vector<vector<int>> &adj, vector<int> &vis, vector<int> &connected_ids, unordered_map<int, int> &node_to_component, int &component_id){
+        connected_ids.push_back(i);
+        vis[i] = 1;
+        node_to_component[i] = component_id;
+        for(auto a : adj[i]){
+            if(vis[a] == -1){
+                dfs(a, adj, vis, connected_ids, node_to_component, component_id);
+            }
         }
+
+        return;
     }
 
-    int find(int x){
-        return x==parent[x] ? x : parent[x]=find(parent[x]);
-    }
+    vector<int> processQueries(int c, vector<vector<int>>& connections, vector<vector<int>>& queries) {
+        // precompute a vector of size n
+        // I have a vector arr[i] where arr[i] returns the smallest id connected to it starting from index i
+        // identify components/power grid
 
-    void unite(int x,int y){
-        int px = find(x), py = find(y);
-        if (px==py) return;
-        if (active[px].size() < active[py].size()) swap(px, py);
-        parent[py] = px;
-        active[px].merge(active[py]);   // move all of py’s actives into px
-    }
-
-    vector<int> processQueries(int c,
-                               vector<vector<int>>& connections,
-                               vector<vector<int>>& queries) {
-        init(c);
-        for (auto &e: connections)
-            unite(e[0], e[1]);
+        unordered_map<int, vector<int>> mp;
+        unordered_map<int, int> node_to_component;
+        vector<vector<int>> adj(c+1);
+        vector<bool> status(c+1, true);
 
         vector<int> ans;
-        vector<char> online(c+1, 1);     // 1 = active, 0 = offline
 
-        for (auto &q : queries){
-            int type = q[0], v = q[1], r = find(v);
+        for(int i = 0; i < connections.size(); i++){
+            adj[connections[i][0]].push_back(connections[i][1]);
+            adj[connections[i][1]].push_back(connections[i][0]);
+        }
 
-            if (type == 1) {
-                if (online[v]) {
-                    // ★ FIX: return v itself when it's still online
-                    ans.push_back(v);
-                } else {
-                    // otherwise smallest active in its component
-                    if (!active[r].empty())
-                        ans.push_back(*active[r].begin());
-                    else
-                        ans.push_back(-1);
+        int component_id = 1;
+        vector<int> vis(c+1, -1);
+
+        for(int i = 1; i <= c; i++){
+            if(vis[i] == -1){
+                vector<int> connected_ids;
+                dfs(i, adj, vis, connected_ids, node_to_component, component_id);
+
+                sort(connected_ids.rbegin(), connected_ids.rend());
+                mp[component_id] = connected_ids;
+                component_id++;
+            }
+        }
+
+        for(int i = 0; i < queries.size(); i++){
+            if(queries[i][0] == 1){
+                if(status[queries[i][1]] == true) ans.push_back(queries[i][1]);
+                else{
+                    if(mp[node_to_component[queries[i][1]]].empty()) ans.push_back(-1);
+                    else{
+                        ans.push_back(mp[node_to_component[queries[i][1]]].back());
+                    }
                 }
-            } else {
-                // type‐2: deactivate v
-                if (online[v]) {
-                    online[v] = 0;
-                    active[r].erase(v);
+            }
+            else{
+                status[queries[i][1]] = false;
+
+                while(!mp[node_to_component[queries[i][1]]].empty() && status[mp[node_to_component[queries[i][1]]].back()] == false){
+                    mp[node_to_component[queries[i][1]]].pop_back();
                 }
             }
         }
+
         return ans;
     }
 };
