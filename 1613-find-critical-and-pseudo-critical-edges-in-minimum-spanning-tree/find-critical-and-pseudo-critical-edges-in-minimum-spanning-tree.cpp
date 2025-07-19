@@ -5,7 +5,7 @@ class Solution {
 public:
     int nm;
 
-    // Lazy Prim’s, skipping edge index = ignore
+    // Lazy Prim’s using multiset, skipping edge index = ignore
     int mst_weight_v1(int ignore, vector<vector<int>>& edges) {
         vector<vector<pair<int,int>>> adj(nm);
         for (int i = 0; i < edges.size(); ++i) {
@@ -16,29 +16,27 @@ public:
         }
 
         vector<bool> inMST(nm, false);
-        priority_queue<
-            pair<int,int>,
-            vector<pair<int,int>>,
-            greater<pair<int,int>>
-        > pq;
-        pq.emplace(0, 0);  // (weight, node)
+        multiset<pair<int,int>> ms;  // (weight, node)
+        ms.insert({0, 0});
 
         int total = 0, cnt = 0;
-        while (!pq.empty() && cnt < nm) {
-            auto [w, u] = pq.top(); pq.pop();
+        while (!ms.empty() && cnt < nm) {
+            auto it = ms.begin();
+            int w = it->first, u = it->second;
+            ms.erase(it);
             if (inMST[u]) continue;
             inMST[u] = true;
             total += w;
             ++cnt;
             for (auto &p : adj[u]) {
                 if (!inMST[p.first])
-                    pq.emplace(p.second, p.first);
+                    ms.insert({p.second, p.first});
             }
         }
         return (cnt == nm ? total : INT_MAX);
     }
 
-    // Lazy Prim’s, pre-including edge index = include
+    // Lazy Prim’s using multiset, pre-including edge index = include
     int mst_weight_v2(int include, vector<vector<int>>& edges) {
         vector<vector<pair<int,int>>> adj(nm);
         for (int i = 0; i < edges.size(); ++i) {
@@ -52,11 +50,7 @@ public:
             w0 = edges[include][2];
 
         vector<bool> inMST(nm, false);
-        priority_queue<
-            pair<int,int>,
-            vector<pair<int,int>>,
-            greater<pair<int,int>>
-        > pq;
+        multiset<pair<int,int>> ms;  // (weight, node)
 
         // force-include (u0,v0)
         inMST[u0] = inMST[v0] = true;
@@ -64,20 +58,22 @@ public:
 
         for (auto &p : adj[u0])
             if (!inMST[p.first])
-                pq.emplace(p.second, p.first);
+                ms.insert({p.second, p.first});
         for (auto &p : adj[v0])
             if (!inMST[p.first])
-                pq.emplace(p.second, p.first);
+                ms.insert({p.second, p.first});
 
-        while (!pq.empty() && cnt < nm) {
-            auto [w, u] = pq.top(); pq.pop();
+        while (!ms.empty() && cnt < nm) {
+            auto it = ms.begin();
+            int w = it->first, u = it->second;
+            ms.erase(it);
             if (inMST[u]) continue;
             inMST[u] = true;
             total += w;
             ++cnt;
             for (auto &p : adj[u]) {
                 if (!inMST[p.first])
-                    pq.emplace(p.second, p.first);
+                    ms.insert({p.second, p.first});
             }
         }
         return (cnt == nm ? total : INT_MAX);
@@ -90,12 +86,9 @@ public:
 
         vector<int> critical, pseudo;
         for (int i = 0; i < edges.size(); ++i) {
-            // 1) critical?
             if (mst_weight_v1(i, edges) > baseline) {
                 critical.push_back(i);
-            }
-            // 2) pseudo (only if not critical)
-            else if (mst_weight_v2(i, edges) == baseline) {
+            } else if (mst_weight_v2(i, edges) == baseline) {
                 pseudo.push_back(i);
             }
         }
