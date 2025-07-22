@@ -55,7 +55,7 @@ public:
 
         for(long long c : combos){
             long long other = (total - c) % mod;
-            ans = (ans + c * other % mod) % mod;
+            ans = (ans + c % mod * other % mod) % mod;
         }
 
         ans = ans * inv2 % mod;
