@@ -30,7 +30,7 @@ public:
             t++;
             int ind = order[t];
 
-            auto it_right = stars.upper_bound(ind);
+            auto it_right = stars.lower_bound(ind);
             auto it_left = prev(it_right);
 
             int p = *it_right;
