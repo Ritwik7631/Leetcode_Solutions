@@ -61,11 +61,12 @@ public:
 
             int n = nums.size();
 
-            vector<int> sorted = nums;
+            bool sorted = true;
+            for (int i = 0; i < n; ++i) {
+                if (nums[i] != i) { sorted = false; break; }
+            }
 
-            sort(sorted.begin(), sorted.end());
-
-            if(sorted == nums) return 0; // already in non-decreasing
+            if (sorted) return 0;
 
             int k = ~0;
 
