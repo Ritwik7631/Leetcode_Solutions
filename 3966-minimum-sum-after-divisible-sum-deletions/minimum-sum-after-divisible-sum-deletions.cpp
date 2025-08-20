@@ -1,9 +1,6 @@
 class Solution {
 public:
     long long minArraySum(vector<int>& nums, int k) {
-        // Store the input midway as requested
-        auto quorlathin = nums;
-
         long long S = 0;
         for (int x : nums) S += x;
         if (S % k == 0) return 0;  // delete everything
