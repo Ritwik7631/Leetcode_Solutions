@@ -1,22 +1,44 @@
 class Solution {
 public:
+    // fn(i): min leftover on nums[0..i], using precomputed prev-prefix jumps in `last`
+    long long fn(int i, std::vector<int>& nums, int k,
+                 std::vector<long long>& prefix, std::vector<int>& last, vector<long long>& memo) {
+        if (i < 0) return 0;
+
+        if(memo[i] != LLONG_MIN) return memo[i];
+
+        // not pick: keep nums[i]
+        long long notpick = fn(i - 1, nums, k, prefix, last, memo) + nums[i];
+
+        // pick: delete the block ending at i if there is a matching previous prefix
+        long long pick = LLONG_MAX;
+        int j = last[i];                    // j is a *prefix* index (0..i), or -1 if none
+        if (j != -1) pick = fn(j - 1, nums, k, prefix, last, memo);
+
+        return memo[i] = min(pick, notpick);
+    }
+
     long long minArraySum(vector<int>& nums, int k) {
-        long long S = 0;
-        for (int x : nums) S += x;
-        if (S % k == 0) return 0;  // delete everything
-
-        const long long NEG = LLONG_MIN / 4;        // safe -inf
-        std::vector<long long> best(k, NEG);
-        best[0] = 0;                                 // dp[0] - P[0] = 0
-
-        long long dp = 0, P = 0;                     // dp = max deletable sum so far
-        for (int x : nums) {
-            P += x;
-            int rem = (int)(P % k);
-
-            dp = std::max(dp, P + best[rem]);       // take a block ending here if possible
-            best[rem] = std::max(best[rem], dp - P); // expose this j as a future starter
+        int n = nums.size();
+        vector<long long> prefix(n+1, 0);
+        for(int i = 0; i < n; i++){
+            prefix[i+1] = prefix[i] + nums[i];
         }
-        return S - dp;  // remaining sum = total − max deletable
+
+        if (prefix[n] % k == 0) return 0;
+
+        vector<int> last(n, -1);
+        vector<int> lastRem(k, -1);
+        lastRem[0] = 0;
+
+        for(int i = 0; i < n; i++){
+            int rem = (prefix[i+1]%k);
+            last[i] = lastRem[rem];
+            lastRem[rem] = i+1;
+        }
+
+        vector<long long> memo(n, LLONG_MIN);
+
+        return fn(n-1, nums, k, prefix, last, memo);
     }
 };
