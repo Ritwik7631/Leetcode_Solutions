@@ -1,44 +1,67 @@
 class Solution {
 public:
-    // fn(i): min leftover on nums[0..i], using precomputed prev-prefix jumps in `last`
-    long long fn(int i, std::vector<int>& nums, int k,
-                 std::vector<long long>& prefix, std::vector<int>& last, vector<long long>& memo) {
-        if (i < 0) return 0;
+    long long fn(int i, vector<int>& nums, vector<long long>& last, int k, vector<long long>& dp){
 
-        if(memo[i] != LLONG_MIN) return memo[i];
+        if(i <= 0) return 0;
 
-        // not pick: keep nums[i]
-        long long notpick = fn(i - 1, nums, k, prefix, last, memo) + nums[i];
+        if(dp[i] != -1) return dp[i];
 
-        // pick: delete the block ending at i if there is a matching previous prefix
         long long pick = LLONG_MAX;
-        int j = last[i];                    // j is a *prefix* index (0..i), or -1 if none
-        if (j != -1) pick = fn(j - 1, nums, k, prefix, last, memo);
+        long long notpick = fn(i-1, nums, last, k, dp) + nums[i-1];
 
-        return memo[i] = min(pick, notpick);
+        if(last[i] != -1) pick = fn(last[i], nums, last, k, dp);
+
+        return dp[i] = min(pick, notpick);
     }
 
+
     long long minArraySum(vector<int>& nums, int k) {
+        /*
+            nums = [3,1,4,1,5], k = 3
+            pref = [0,3,4,8,9,14]
+      prefix_mod = [0,0,1,2,0,2]
+
+        dp[i] returns the minimum leftover sum from 0 to i-1
+
+        dp[n] should give the answer
+
+        if(i < 0) return 0
+
+        delete = fn(last[i]);
+
+        notdelete = fn(i-1) + nums[i];
+
+        return min(delete, notdelete)
+
+        last[i] returns the last index where the mod is the same
+        */
+
         int n = nums.size();
-        vector<long long> prefix(n+1, 0);
-        for(int i = 0; i < n; i++){
-            prefix[i+1] = prefix[i] + nums[i];
-        }
 
-        if (prefix[n] % k == 0) return 0;
-
-        vector<int> last(n, -1);
-        vector<int> lastRem(k, -1);
-        lastRem[0] = 0;
+        vector<long long> pref(n+1, 0);
 
         for(int i = 0; i < n; i++){
-            int rem = (prefix[i+1]%k);
-            last[i] = lastRem[rem];
-            lastRem[rem] = i+1;
+            pref[i+1] = pref[i] + (long long)nums[i];
         }
 
-        vector<long long> memo(n, LLONG_MIN);
+        vector<long long> prefix_mod(n+1, 0);
 
-        return fn(n-1, nums, k, prefix, last, memo);
+        for(int i = 0; i < pref.size(); i++){
+            prefix_mod[i] = (long long)pref[i] % k;
+        }
+
+        vector<long long> last(n+1, -1); // last[i] returns the last strictly lower index where pref_mod[lower_index] = pref_mod[i]
+        vector<long long> last_remainder(k, -1);
+
+        for(int i = 0; i <= n; i++){
+            int r = prefix_mod[i];
+            last[i] = last_remainder[r];
+            last_remainder[r] = i;
+        }
+
+        vector<long long> dp(n+1, -1);
+
+        return fn(n, nums, last, k, dp);
+
     }
 };
