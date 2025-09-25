@@ -10,32 +10,28 @@ public:
 
         int k = 0;
 
-        while(i < n || j < m)
+        while(i < n && j < m)
         {
             if(k%2==0){
-                if(i < n){
-                    ans += word1[i];
-                    i++;
-                }
-                else
-                {
-                    ans += word2[j];
-                    j++;
-                }
-
+                ans += word1[i];
+                i++;
             }
             else{
-                if(j < m){
-                    ans += word2[j];
-                    j++;
-                }
-                else{
-                    ans += word1[i];
-                    i++;
-                }
+                ans += word2[j];
+                j++;
             }
 
             k++;
+        }
+
+        while(i < n){
+            ans += word1[i];
+            i++;
+        }
+
+        while(j < m){
+            ans += word2[j];
+            j++;
         }
 
         return ans;
