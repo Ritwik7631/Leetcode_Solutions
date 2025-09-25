@@ -8,20 +8,15 @@ public:
 
         int i = 0, j = 0;
 
-        int k = 0;
-
         while(i < n && j < m)
         {
-            if(k%2==0){
-                ans += word1[i];
-                i++;
-            }
-            else{
-                ans += word2[j];
-                j++;
+            if(i < n){
+                ans += word1[i++];
             }
 
-            k++;
+            if(j < m){
+                ans += word2[j++];
+            }
         }
 
         while(i < n){
