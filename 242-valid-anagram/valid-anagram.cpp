@@ -3,17 +3,17 @@ public:
     bool isAnagram(string s, string t) {
         if(s.size() != t.size()) return false;
 
-        unordered_map<char,int> mp;
+        unordered_map<char,int> target;
 
         for(auto a : s)
         {
-            mp[a]++;
+            target[a]++;
         }
 
         for(auto b : t)
         {
-            if(mp[b] == 0) return false;
-            mp[b]--;
+            if(target[b] == 0) return false;
+            target[b]--;
         }
 
         return true;
