@@ -18,7 +18,7 @@ public:
                 ans += (n1*2);
             }
             else if(operations[i] == "+"){
-                int n3 = record.back()+record[record.size()-1-1];;
+                int n3 = record.back()+record[record.size()-2];;
                 record.push_back(n3);
                 ans += n3;
             }
