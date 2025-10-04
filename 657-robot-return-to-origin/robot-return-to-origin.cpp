@@ -23,8 +23,6 @@ public:
                 current.first += rdel[3];
                 current.second += cdel[3];
             }
-
-            cout << "current x: " << current.first << " current y: " << current.second << endl;
         }
 
         return (current.first == 0 && current.second == 0) ? true : false;
