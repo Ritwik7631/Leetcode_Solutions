@@ -13,7 +13,7 @@ public:
                 record.pop_back();
             }
             else if(operations[i] == "D"){
-                int n1 = record[record.size()-1];
+                int n1 = record.back();
                 record.push_back(n1*2);
                 ans += (n1*2);
             }
