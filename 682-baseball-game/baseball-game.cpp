@@ -1,70 +1,30 @@
 class Solution {
 public:
-    bool isnum(string x)
-    {
-        for(auto a : x)
-        {
-            char y = a;
-            int digit = y - '0';
-
-            if(!(digit >= 0 && digit <= 9)) return false;
-        }
-
-        return true;
-    }
-
     int calPoints(vector<string>& operations) {
-        stack<int> scores;
+        vector<int> record;
 
-        for(auto a : operations)
-        {
-            if(a[0] == '-')
-            {
-                string temp(a.begin()+1, a.end());
+        int n = operations.size();
 
-                if(isnum(temp)) scores.push(-1 * stoi(temp));
+        for(int i = 0; i < n; i++){
+            if(operations[i] == "C"){
+                record.pop_back();
             }
-            
-            if(isnum(a)) scores.push(stoi(a));
-
-            if(a == "+")
-            {
-                int x = scores.top();
-                scores.pop();
-                int y = scores.top();
-                scores.pop();
-
-                scores.push(y);
-                scores.push(x);
-                scores.push(y+x);
-                
-                // cout << "+" << " " << endl;
-                // cout << y << " " << x << " " << y+x << " " << endl;
+            else if(operations[i] == "D"){
+                int n1 = record[record.size()-1];
+                record.push_back(n1*2);
             }
-
-            if(a == "D")
-            {
-                int x = scores.top();
-                scores.pop();
-
-                scores.push(x);
-                scores.push(x*2);
-                
-                // cout << "D" << endl;
-                // cout << x << " " << x*2 << " " << endl;
+            else if(operations[i] == "+"){
+                int n1 = record[record.size()-1];
+                int n2 = record[record.size()-1-1];
+                int n3 = n1+n2;
+                record.push_back(n3);
             }
-
-            if(a == "C")
-            {
-                scores.pop();
-            }
+            else{
+                record.push_back(stoi(operations[i]));
+            }   
         }
-        int ans = 0;
-        while(!scores.empty())
-        {
-            ans += scores.top();
-            scores.pop();
-        }
+
+        int ans = accumulate(record.begin(), record.end(), 0);
 
         return ans;
     }
