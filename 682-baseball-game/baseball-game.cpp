@@ -9,7 +9,7 @@ public:
 
         for(int i = 0; i < n; i++){
             if(operations[i] == "C"){
-                ans -= record[record.size()-1];
+                ans -= record.back();
                 record.pop_back();
             }
             else if(operations[i] == "D"){
