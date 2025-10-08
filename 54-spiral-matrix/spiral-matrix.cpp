@@ -13,7 +13,7 @@ public:
 
         vector<int> ans;
 
-        while(ans.size() < n*m){
+        while(visited.size() < n*m){
             visited.insert(current);
             ans.push_back(matrix[current[0]][current[1]]);
             
