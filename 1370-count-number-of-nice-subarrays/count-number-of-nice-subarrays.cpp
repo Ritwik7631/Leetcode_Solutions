@@ -6,16 +6,15 @@ public:
         unordered_map<int,int> freq;
         freq[0] = 1;
 
-        int count = 0;
         int ans = 0;
 
-        for(int i = 0; i < n; i++){
-            if(nums[i] % 2 == 1){
-                count++;
-            }
+        int current = 0;
 
-            if(freq.count(count - k)) ans += freq[count-k];
-            freq[count]++;
+        for(int i = 0; i < n; i++){
+            if(nums[i] % 2 == 1) current++;
+
+            if(freq.count(current - k)) ans += freq[current-k];
+            freq[current]++;
         }
 
         return ans;
