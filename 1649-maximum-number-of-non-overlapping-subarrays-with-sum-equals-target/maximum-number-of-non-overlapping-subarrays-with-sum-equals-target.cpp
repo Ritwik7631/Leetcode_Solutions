@@ -5,8 +5,8 @@ public:
 
         int sum = 0;
 
-        unordered_map<int,int> prev_seen;
-        prev_seen[0] = 1; 
+        unordered_set<int> prev_seen;
+        prev_seen.insert(0);
 
         int count = 0;
 
@@ -16,11 +16,11 @@ public:
             if(prev_seen.count(sum - target)){
                 count++;
                 prev_seen.clear();
-                prev_seen[0] = 1;
+                prev_seen.insert(0);
                 sum = 0;
             }
             else{
-                prev_seen[sum] = i;
+                prev_seen.insert(sum);
             }
         }
 
