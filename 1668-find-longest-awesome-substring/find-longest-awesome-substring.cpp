@@ -16,15 +16,31 @@ public:
 
             parity[d] ^= 1;
 
-            for(int j = 0; j < 10; j++) key[j] = parity[j] ? '1' : '0';
+            for(int j = 0; j < 10; j++){
+                if(parity[j] == 1){
+                    key[j] = '1';
+                }
+                else{
+                    key[j] = '0';
+                }
+            }
 
             if (last_seen.count(key)) ans = max(ans, i - last_seen[key]);
             else last_seen[key] = i;
 
             for (int b = 0; b < 10; b++) {
-                key[b] = (key[b] == '0' ? '1' : '0');
-                if (last_seen.count(key)) ans = max(ans, i - last_seen[key]);
-                key[b] = (key[b] == '0' ? '1' : '0'); // revert
+                if (key[b] == '0')
+                    key[b] = '1';
+                else
+                    key[b] = '0';
+
+                if (last_seen.count(key))
+                    ans = max(ans, i - last_seen[key]);
+
+                if (key[b] == '0')
+                    key[b] = '1';
+                else
+                    key[b] = '0';
             }
         }
 
