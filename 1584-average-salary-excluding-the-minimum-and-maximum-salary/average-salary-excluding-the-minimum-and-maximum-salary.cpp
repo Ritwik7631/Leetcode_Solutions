@@ -1,11 +1,19 @@
 class Solution {
 public:
     double average(vector<int>& salary) {
-        double n = salary.size();
-        sort(salary.begin(), salary.end());
-        double ans = accumulate(salary.begin() + 1, salary.begin() + n - 1, 0);
-        ans /= (n-2.0);
+        int n = salary.size();
 
-        return ans;
+        int maxi = INT_MIN;
+        int mini = INT_MAX;
+        double sum = 0;
+
+        for(int i = 0; i < n; i++){
+            maxi = max(maxi, salary[i]);
+            mini = min(mini, salary[i]);
+
+            sum += salary[i];
+        }
+
+        return (sum - maxi - mini) / (n-2);
     }
 };
