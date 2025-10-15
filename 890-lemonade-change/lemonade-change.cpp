@@ -8,7 +8,6 @@ public:
 
         int fives = 0;
         int tens = 0;
-        int twentys = 0;
 
         for(int i = 0; i < n; i++){
             if(bills[i] == 5){
@@ -24,8 +23,6 @@ public:
                 }
             }
             else {
-                twentys++;
-
                 if(tens >= 1 && fives >= 1){
                     tens--;
                     fives--;
