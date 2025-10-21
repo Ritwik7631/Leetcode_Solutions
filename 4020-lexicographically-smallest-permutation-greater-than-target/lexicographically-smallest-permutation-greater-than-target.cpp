@@ -1,46 +1,45 @@
 class Solution {
 public:
     string lexGreaterPermutation(string s, string target) {
-        string ans = "";
-        vector<int> bank(26, 0);
+        vector<int> bank(26,0);
 
-        for (auto a : s) bank[a - 'a']++;
+        for(auto a : s) bank[a-'a']++;
+
+        string ans = "";
 
         int i = -1;
-        for (char a : target) {
+        for(char a : target){
             i++;
-            if (bank[a - 'a'] > 0) {
-                bank[a - 'a']--;
+            if(bank[a-'a'] > 0){
+                bank[a-'a']--;
                 ans += a;
-            } else {
-                break;
             }
+            else break;
         }
 
-        // do NOT return on full match; we still need next permutation if it exists
-        if (ans.size() != target.size()) {
-            // try to bump at the mismatch position i
-            int need = target[i] - 'a';
-            for (int k = need + 1; k < 26; k++) {
-                if (bank[k] > 0) {
-                    ans += char('a' + k);
+        if(ans.size() != target.size()){
+            int letter = target[i] - 'a';
+            for(int k = letter+1; k < 26; k++){
+                if(bank[k] > 0){
+                    ans += (k + 'a');
                     bank[k]--;
-                    for (int t = 0; t < 26; t++) ans += string(bank[t], 'a' + t);
+                    for(int t = 0; t < 26; t++) ans += string(bank[t], t+'a');
                     return ans;
                 }
             }
         }
 
-        // backtrack into the matched prefix to find first bumpable spot
-        for (int j = (int)ans.size() - 1; j >= 0; j--) {
-            int cur = ans[j] - 'a';
-            bank[cur]++; // put back
-            for (int k = cur + 1; k < 26; k++) {
-                if (bank[k] > 0) {
-                    ans[j] = char('a' + k);
+        for(int j = ans.size()-1; j >= 0; j--){
+            int index = ans[j] - 'a';
+            bank[index]++;
+            for(int k = index+1; k < 26; k++){
+                if(bank[k] > 0){
+                    ans[j] = (k + 'a');
                     bank[k]--;
-                    ans = ans.substr(0, j + 1);         // drop old suffix
-                    for (int t = 0; t < 26; t++) ans += string(bank[t], 'a' + t);
+                    ans = ans.substr(0, j+1);
+                    for(int t = 0; t < 26; t++){
+                        ans += string(bank[t], t+'a');
+                    }
                     return ans;
                 }
             }
