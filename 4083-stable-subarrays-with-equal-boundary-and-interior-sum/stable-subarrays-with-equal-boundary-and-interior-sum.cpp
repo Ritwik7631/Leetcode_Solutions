@@ -6,10 +6,10 @@ public:
 
         unordered_map<int,vector<int>> last_seen; // value, indices
 
-        vector<long long> prefix(capacity.begin(), capacity.end());
+        vector<long long> prefix(n+1,0);
 
-        for(int i = 1; i < n; i++){
-            prefix[i] = prefix[i-1] + capacity[i];
+        for(int i = 0; i < n; i++){
+            prefix[i+1] = prefix[i] + capacity[i];
         }
 
         unordered_map<long long, unordered_map<long,long>> cnt;
@@ -18,11 +18,10 @@ public:
 
             if(i - 2 >= 0){
                 int a = i-2;
-                long long key = (a - 1 >= 0) ? prefix[a - 1] : 0;
-                cnt[capacity[a]][key]++;
+                cnt[capacity[a]][prefix[a]]++;
             }
 
-            long long need = prefix[i] - 3LL*capacity[i];
+            long long need = prefix[i+1] - 3LL*capacity[i];
 
             if(cnt.count(capacity[i])){
                 auto &inner = cnt[capacity[i]];
