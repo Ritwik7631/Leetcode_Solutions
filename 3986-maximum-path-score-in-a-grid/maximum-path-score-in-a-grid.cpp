@@ -10,17 +10,15 @@ public:
 
     inline int cost(int v) { return v == 0 ? 0 : 1; }
 
-    // best total starting at (i,j) with 'rem' budget; returns IMP if impossible
     int dfs(int i, int j, int rem) {
         int v = (*G)[i][j];
         int rem2 = rem - cost(v);
         if (rem2 < 0) return IMP;
 
-        int &cell = memo[i][j][rem];
-        if (cell != UNVIS) return cell;      // already computed (value or IMP)
+        if (memo[i][j][rem] != UNVIS) return memo[i][j][rem];
 
-        if (i == n-1 && j == m-1)            // last cell
-            return v;
+        if (i == n-1 && j == m-1)
+            return memo[i][j][rem] = v;
 
         int best = IMP;
         if (i + 1 < n) {
@@ -32,8 +30,8 @@ public:
             if (right != IMP) best = max(best, right);
         }
 
-        if (best == IMP) return cell = IMP;
-        return cell = v + best;
+        if (best == IMP) return memo[i][j][rem] = IMP;
+        return memo[i][j][rem] = v + best;
     }
 
     int maxPathScore(vector<vector<int>>& grid, int k) {
