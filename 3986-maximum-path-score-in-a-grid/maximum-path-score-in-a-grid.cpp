@@ -1,67 +1,45 @@
 class Solution {
 public:
-    int fn(int x){
-        return x == 0 ? 0 : 1; // cost: 1 if 1 or 2, else 0
-    }
+    int n, m;
+    vector<vector<int>> *G;
 
-    // memo[i][j][cost] = best additional score achievable from (i,j) with 'cost' already spent
-    // UNSET = INT_MIN, IMPOSSIBLE = -1e9
+    static constexpr int UNVIS = -2; // not computed
+    static constexpr int IMP   = -1; // computed impossible
+
     vector<vector<vector<int>>> memo;
-    static constexpr int IMPOSSIBLE = -1000000000;
 
-    int dfs(int i, int j, int score, int cost, int n, int m, int k,
-            vector<vector<int>>& visited, vector<vector<int>>& grid){
-        if(i == n-1 && j == m-1) return score;
+    inline int cost(int v) { return v == 0 ? 0 : 1; }
 
-        int &cell = memo[i][j][cost];
-        if (cell != INT_MIN) {
-            if (cell == IMPOSSIBLE) return INT_MIN;
-            return score + cell; // reuse cached "extra" part
+    // best total starting at (i,j) with 'rem' budget; returns IMP if impossible
+    int dfs(int i, int j, int rem) {
+        int v = (*G)[i][j];
+        int rem2 = rem - cost(v);
+        if (rem2 < 0) return IMP;
+
+        int &cell = memo[i][j][rem];
+        if (cell != UNVIS) return cell;      // already computed (value or IMP)
+
+        if (i == n-1 && j == m-1)            // last cell
+            return cell = v;
+
+        int best = IMP;
+        if (i + 1 < n) {
+            int down = dfs(i + 1, j, rem2);
+            if (down != IMP) best = max(best, down);
+        }
+        if (j + 1 < m) {
+            int right = dfs(i, j + 1, rem2);
+            if (right != IMP) best = max(best, right);
         }
 
-        int right = INT_MIN, down = INT_MIN;
-
-        // right
-        int ni = i, nj = j+1;
-        if(nj < m && !visited[ni][nj]){
-            int x = fn(grid[ni][nj]);
-            int n_cost = cost + x;
-            if(n_cost <= k){
-                visited[ni][nj] = 1;
-                right = max(right, dfs(ni, nj, score + grid[ni][nj], n_cost, n, m, k, visited, grid));
-                visited[ni][nj] = 0;
-            }
-        }
-
-        // down
-        ni = i+1; nj = j;
-        if(ni < n && !visited[ni][nj]){
-            int x = fn(grid[ni][nj]);
-            int n_cost = cost + x;
-            if(n_cost <= k){
-                visited[ni][nj] = 1;
-                down = max(down, dfs(ni, nj, score + grid[ni][nj], n_cost, n, m, k, visited, grid));
-                visited[ni][nj] = 0;
-            }
-        }
-
-        int best = max(right, down);
-        if (best == INT_MIN) {
-            cell = IMPOSSIBLE;
-            return INT_MIN;
-        }
-        cell = best - score;           // store "additional" score from this state
-        return best;
+        if (best == IMP) return cell = IMP;
+        return cell = v + best;
     }
 
     int maxPathScore(vector<vector<int>>& grid, int k) {
-        int n = grid.size(), m = grid[0].size();
-        vector<vector<int>> visited(n, vector<int>(m, 0));
-        visited[0][0] = 1;
-
-        memo.assign(n, vector<vector<int>>(m, vector<int>(k+1, INT_MIN)));
-
-        int ans = dfs(0, 0, grid[0][0], 0, n, m, k, visited, grid);
-        return ans == INT_MIN ? -1 : ans;
+        n = grid.size(); m = grid[0].size(); G = &grid;
+        memo.assign(n, vector<vector<int>>(m, vector<int>(k + 1, UNVIS)));
+        int ans = dfs(0, 0, k);
+        return ans == IMP ? -1 : ans;
     }
 };
