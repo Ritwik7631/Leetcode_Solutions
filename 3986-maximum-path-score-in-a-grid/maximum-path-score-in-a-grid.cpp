@@ -20,7 +20,7 @@ public:
         if (cell != UNVIS) return cell;      // already computed (value or IMP)
 
         if (i == n-1 && j == m-1)            // last cell
-            return cell = v;
+            return v;
 
         int best = IMP;
         if (i + 1 < n) {
