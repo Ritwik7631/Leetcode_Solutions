@@ -21,7 +21,7 @@ public:
             ans += pow9[L];      // 9^L numbers with no zero digit
         }
 
-        // 2) numbers with same number of digits as n and <= n
+        // 2) numbers with same number of digits as n
         bool hasZero = false;
         for (int i = 0; i < k; ++i) {
             int d = s[i] - '0';
