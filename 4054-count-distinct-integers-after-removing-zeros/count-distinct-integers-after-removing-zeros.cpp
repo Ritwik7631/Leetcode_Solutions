@@ -1,44 +1,54 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
-    long long countDistinct(long long n) {
-        string s = to_string(n);
-        int k = (int)s.size();
-
-        // precompute powers of 9
-        long long pow9[20];
-        pow9[0] = 1;
-        for (int i = 1; i < 20; ++i) {
-            pow9[i] = pow9[i - 1] * 9;
+    long long dp[20][2][2];
+    long long solve(int idx, string str, bool constrained, bool began){
+        if(idx == str.size()){
+            if(began) return 1;
+            else return 0;
         }
+
+        if(dp[idx][constrained][began] != -1) return dp[idx][constrained][began]; 
 
         long long ans = 0;
 
-        // 1) numbers with fewer digits than n
-        for (int L = 1; L < k; ++L) {
-            ans += pow9[L];      // 9^L numbers with no zero digit
+        int mxdigit = str[idx] - '0';
+        int mxallowed;
+
+        if(constrained){
+            mxallowed = mxdigit;
+        }
+        else{
+            mxallowed = 9;
         }
 
-        // 2) numbers with same number of digits as n
-        bool hasZero = false;
-        for (int i = 0; i < k; ++i) {
-            int d = s[i] - '0';
-            int remaining = k - i - 1;
-
-            if (d == 0) {
-                hasZero = true;
-                break;
+        if(!began){
+            if(constrained && mxallowed == 0){
+                ans += solve(idx+1, str, true, false);
             }
-
-            // digits 1..(d-1) at this position, then any non-zero digits for the rest
-            ans += (long long)(d - 1) * pow9[remaining];
+            else{
+                ans += solve(idx+1, str, false, false);
+            }
         }
 
-        // if n itself has no zero digit, count it
-        if (!hasZero) ans += 1;
+        for(int d = 1; d <= 9; d++){
+            if(d > mxallowed) break;
 
-        return ans;
+            if(constrained && mxallowed == d){
+                ans += solve(idx+1, str, true, true);
+            }
+            else{
+                ans += solve(idx+1, str, false, true);
+            }
+        }
+
+        return dp[idx][constrained][began] = ans;
+    }
+
+    long long countDistinct(long long n) {
+        string str = to_string(n);
+
+        memset(dp, -1, sizeof(dp));
+
+        return solve(0,str,true,false);
     }
 };
