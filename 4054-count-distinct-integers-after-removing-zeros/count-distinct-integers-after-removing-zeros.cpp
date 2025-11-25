@@ -12,33 +12,20 @@ public:
         long long ans = 0;
 
         int mxdigit = str[idx] - '0';
-        int mxallowed;
-
-        if(constrained){
-            mxallowed = mxdigit;
-        }
-        else{
-            mxallowed = 9;
-        }
+        int mxallowed = (constrained) ? mxdigit : 9;
 
         if(!began){
-            if(constrained && mxallowed == 0){
-                ans += solve(idx+1, str, true, false);
-            }
-            else{
-                ans += solve(idx+1, str, false, false);
-            }
+            bool nc = constrained && mxallowed == 0;
+            ans += solve(idx+1, str, nc, false);
         }
+        
 
         for(int d = 1; d <= 9; d++){
             if(d > mxallowed) break;
 
-            if(constrained && mxallowed == d){
-                ans += solve(idx+1, str, true, true);
-            }
-            else{
-                ans += solve(idx+1, str, false, true);
-            }
+            bool nc = constrained && (mxallowed == d);
+
+            ans += solve(idx+1, str, nc, true);
         }
 
         return dp[idx][constrained][began] = ans;
