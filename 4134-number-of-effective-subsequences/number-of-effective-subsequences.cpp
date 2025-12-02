@@ -1,85 +1,79 @@
 class Solution {
 public:
-    static constexpr int MOD = 1000000007;
+    static const int MOD = 1'000'000'007;
 
     int countEffective(vector<int>& nums) {
-        int n = (int)nums.size();
-        long long G = 0;
-        for (int x : nums) G |= x;
+        int n = nums.size();
 
-        // If global OR is 0, no bit can ever be "lost" → no effective subsequence
-        if (G == 0) return 0;
+        // 1. Compute full OR and find number of bits K
+        int OR_all = 0;
+        for (int x : nums) OR_all |= x;
 
-        // Compress the set bits of G into [0..m-1]
-        int bitId[20];
-        for (int i = 0; i < 20; ++i) bitId[i] = -1;
-        int m = 0;
-        for (int b = 0; b < 20; ++b) {
-            if ((G >> b) & 1) {
-                bitId[b] = m++;
-            }
-        }
+        // Compress to only relevant bits
+        // Let K = number of bits needed for OR_all
+        vector<int> bits;
+        for (int b = 0; b < 20; b++)
+            if (OR_all & (1 << b))
+                bits.push_back(b);
 
-        int maskCount = 1 << m;
+        int K = bits.size();              // # of relevant bits
+        int M = 1 << K;                   // masks: 0..(2^K - 1)
 
-        // freq[mask] = how many nums[i] have exactly this bit pattern (over the m relevant bits)
-        vector<long long> freq(maskCount, 0);
+        // 2. Build freq[mask] where mask is in "compressed K-bit space"
+        vector<int> freq(M, 0);
+
         for (int x : nums) {
-            int mask = 0;
-            for (int b = 0; b < 20; ++b) {
-                if (bitId[b] != -1 && ((x >> b) & 1)) {
-                    mask |= (1 << bitId[b]);
+            int cmask = 0;
+            for (int i = 0; i < K; i++) {
+                if (x & (1 << bits[i])) 
+                    cmask |= (1 << i);
+            }
+            freq[cmask]++;
+        }
+
+        // 3. SOS DP (submask sum): F[mask] = sum(freq[sub]) over all sub ⊆ mask
+        vector<int> F = freq;
+        for (int bit = 0; bit < K; bit++) {
+            for (int mask = 0; mask < M; mask++) {
+                if (mask & (1 << bit)) {
+                    F[mask] = (F[mask] + F[mask ^ (1 << bit)]) % MOD;
                 }
             }
-            freq[mask]++;
         }
 
-        // SOS DP: subCount[mask] = sum_{sub ⊆ mask} freq[sub]
-        // Interpreted as: number of indices whose bitmask is a subset of "mask".
-        vector<long long> subCount = freq;
-        for (int i = 0; i < m; ++i) {
-            for (int mask = 0; mask < maskCount; ++mask) {
-                if (mask & (1 << i)) {
-                    subCount[mask] += subCount[mask ^ (1 << i)];
-                }
-            }
-        }
+        // F[mask] = # of numbers whose compressed bitmask ⊆ mask.
 
-        // Precompute powers of 2 up to n
-        vector<long long> pow2(n + 1, 1);
-        for (int i = 1; i <= n; ++i) {
-            pow2[i] = (pow2[i - 1] * 2) % MOD;
-        }
-
-        int fullMask = maskCount - 1;
+        // 4. Inclusion-Exclusion over all non-empty X ⊆ OR_all_bits
         long long ans = 0;
 
-        // Inclusion–exclusion over non-empty subsets of bits T
-        // For each T:
-        //   let U_T be union of index-sets for bits in T
-        //   |U_T| = n - (#indices whose bitmask has no bit from T)
-        //         = n - subCount[complement_of_T]
-        //   subsequences that cover all of U_T = 2^(n - |U_T|)
-        //   contribution sign = (-1)^(|T|-1)
-        for (int T = 1; T < maskCount; ++T) {
-            int bits = __builtin_popcount(T);
-            int complement = fullMask ^ T;
+        for (int X = 1; X < M; X++) {
+            // Numbers that DO NOT intersect X are exactly those
+            // whose mask ⊆ (~X) in K-bit space.
+            int complement = ((M - 1) ^ X); // invert only K bits
 
-            long long noBitCount = subCount[complement]; // indices with no bit from T
-            long long unionSize = n - noBitCount;
+            long long good = F[complement];  // numbers avoiding X
+            long long bad = n - good;        // numbers hitting at least one bit in X
 
-            if (unionSize == 0) continue; // impossible to cover any bit in T
+            // subsequences of removals must include ALL bad elements
+            // and may include any subset of the remaining good ones
+            long long ways = modpow(2, good); // choose any subset of "good" to include in removal
 
-            long long ways = pow2[n - (int)unionSize];
-            if (bits & 1) {
-                ans += ways;
-                if (ans >= MOD) ans -= MOD;
-            } else {
-                ans -= ways;
-                if (ans < 0) ans += MOD;
-            }
+            if (__builtin_popcount(X) % 2 == 1)
+                ans = (ans + ways) % MOD;
+            else
+                ans = (ans - ways + MOD) % MOD;
         }
 
-        return (int)ans;
+        return ans;
+    }
+
+    long long modpow(long long a, long long e) {
+        long long r = 1;
+        while (e > 0) {
+            if (e & 1) r = (r * a) % MOD;
+            a = (a * a) % MOD;
+            e >>= 1;
+        }
+        return r;
     }
 };
