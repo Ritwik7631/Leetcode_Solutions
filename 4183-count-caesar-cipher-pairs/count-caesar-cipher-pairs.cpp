@@ -15,22 +15,13 @@ public:
         }
 
         unordered_map<string,int> sig_freq;
-        vector<unordered_map<string,int>> prefix;
-
-        for(int i = 0; i < n; i++){
-            sig_freq[word_to_sig[i]] += 1;
-            prefix.push_back(sig_freq);
-        }
-
         long long ans = 0;
 
-        for(int i = 1; i < n; i++){
-            string sig_j = word_to_sig[i];
-
-            if(prefix[i-1].count(sig_j)){
-                ans += (long long)prefix[i-1][sig_j];
-            }
+        for (int i = 0; i < n; i++) {
+            ans += sig_freq[word_to_sig[i]];
+            sig_freq[word_to_sig[i]]++;
         }
+
         
         return ans;
     }
